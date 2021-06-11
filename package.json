@@ -1,0 +1,23 @@
+{
+  "name": "com.halfhumangames.messages",
+  "version": "1.0.0",
+  "displayName": "Messages",
+  "description": "A simple message system for Unity",
+  "unity": "2020.3",
+  "unityRelease": "6f1",
+  "documentationUrl": "https://github.com/HalfHumanGames/Messages/blob/main/README.md",
+  "changelogUrl": "https://github.com/HalfHumanGames/Messages/blob/main/CHANGELOG.md",
+  "licensesUrl": "https://github.com/HalfHumanGames/Messages/blob/main/LICENSE",
+  "keywords": [
+    "Message",
+    "Messages",
+    "Publish",
+    "Subscribe"
+  ],
+  "author": {
+    "name": "Half Human Games",
+    "email": "contact@halfhumangames.com",
+    "url": "https://halfhumangames.com/"
+  },
+  "type": "library"
+}
