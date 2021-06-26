@@ -1,7 +1,7 @@
 {
   "name": "com.halfhumangames.messages",
   "version": "1.0.0",
-  "displayName": "Messages",
+  "displayName": "HHG - Messages",
   "description": "A simple message system for Unity",
   "unity": "2020.3",
   "unityRelease": "6f1",
@@ -19,5 +19,8 @@
     "email": "contact@halfhumangames.com",
     "url": "https://halfhumangames.com/"
   },
-  "type": "library"
+  "type": "library",
+  "dependencies": {
+    "com.halfhumangames.common": "1.0.0"
+  }
 }

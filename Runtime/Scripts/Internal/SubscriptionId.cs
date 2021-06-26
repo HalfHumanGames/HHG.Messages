@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HHG.Common;
+using System;
 
 namespace HHG.Messages
 {
