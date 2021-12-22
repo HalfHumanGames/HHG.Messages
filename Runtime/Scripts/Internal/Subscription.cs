@@ -2,37 +2,40 @@
 
 namespace HHG.Messages
 {
-    internal class ActionSubscription
+    internal class Subscription
     {
         public SubscriptionId SubscriptionId { get; private set; }
-        private Action<object> callback;
+        private Delegate callback;
 
-        public ActionSubscription(SubscriptionId subscriptionId, Action<object> wrappedCallback)
+        public Subscription(SubscriptionId subscriptionId, Delegate wrappedCallback)
         {
             SubscriptionId = subscriptionId;
             callback = wrappedCallback;
         }
 
-        public void Invoke(object message)
+        public void InvokeAction(object message)
         {
-            callback(message);
-        }
-    }
-
-    internal class FuncSubscription
-    {
-        public SubscriptionId SubscriptionId { get; private set; }
-        private Func<object, object> callback;
-
-        public FuncSubscription(SubscriptionId subscriptionId, Func<object, object> wrappedCallback)
-        {
-            SubscriptionId = subscriptionId;
-            callback = wrappedCallback;
+            if (callback is Action action)
+            {
+                action();
+            }
+            else if (callback is Action<object> actionWithParam)
+            {
+                actionWithParam(message);
+            }
         }
 
-        public object Invoke(object message)
+        public object InvokeFunc(object message)
         {
-            return callback(message);
+            if (callback is Func<object> func)
+            {
+                return func();
+            }
+            else if (callback is Func<object, object> funcWithParam)
+            {
+                return funcWithParam(message);
+            }
+            return default;
         }
     }
 }

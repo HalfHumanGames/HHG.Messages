@@ -8,29 +8,41 @@ namespace HHG.Messages
     {
         internal class Default : IMessage
         {
-            private static readonly Dictionary<SubjectId, List<ActionSubscription>> actionSubscriptions = new Dictionary<SubjectId, List<ActionSubscription>>();
-            private static readonly Dictionary<SubjectId, List<FuncSubscription>> funcSubscriptions = new Dictionary<SubjectId, List<FuncSubscription>>();
+            private static readonly Dictionary<SubjectId, List<Subscription>> actionSubscriptions = new Dictionary<SubjectId, List<Subscription>>();
+            private static readonly Dictionary<SubjectId, List<Subscription>> funcSubscriptions = new Dictionary<SubjectId, List<Subscription>>();
 
             #region Action Publishing
 
-            public void Publish<T>() where T : class
+            public void Publish(object id)
+            {
+                Publish<object>(id, null);
+            }
+
+            public void Publish<T>()
             {
                 T message = Activator.CreateInstance<T>();
                 Publish(message);
             }
 
-            public void Publish<T>(object id) where T : class
+            public void Publish<T>(object id)
             {
                 T message = Activator.CreateInstance<T>();
                 Publish(id, message);
             }
 
-            public void Publish<T>(T message) where T : class
+            public void Publish<T>(T message)
             {
-                Publish(null, message);
+                if (typeof(T).IsPrimitive || typeof(T) == typeof(string))
+                {
+                    Publish((object) message);
+                } 
+                else
+                {
+                    Publish(null, message);
+                }
             }
 
-            public void Publish<T>(object id, T message) where T : class
+            public void Publish<T>(object id, T message)
             {
                 SubjectId subjectId = new SubjectId(typeof(T), id);
 
@@ -39,9 +51,9 @@ namespace HHG.Messages
                     return;
                 }
 
-                foreach (ActionSubscription subscription in actionSubscriptions[subjectId])
+                foreach (Subscription subscription in actionSubscriptions[subjectId])
                 {
-                    subscription.Invoke(message);
+                    subscription.InvokeAction(message);
                 }
 
                 if (id != null)
@@ -54,24 +66,24 @@ namespace HHG.Messages
 
             #region Func Publishing
 
-            public R[] Publish<T, R>() where T : class
+            public R[] Publish<T, R>()
             {
                 T message = Activator.CreateInstance<T>();
                 return Publish<T, R>(message);
             }
 
-            public R[] Publish<T, R>(object id) where T : class
+            public R[] Publish<T, R>(object id)
             {
                 T message = Activator.CreateInstance<T>();
                 return Publish<T, R>(id, message);
             }
 
-            public R[] Publish<T, R>(T message) where T : class
+            public R[] Publish<T, R>(T message)
             {
                 return Publish<T, R>(null, message);
             }
 
-            public R[] Publish<T, R>(object id, T message) where T : class
+            public R[] Publish<T, R>(object id, T message)
             {
                 SubjectId subjectId = new SubjectId(typeof(T), id);
 
@@ -92,9 +104,9 @@ namespace HHG.Messages
                 R[] retval = new R[size];
 
                 int i = 0;
-                foreach (FuncSubscription subscription in funcSubscriptions[subjectId])
+                foreach (Subscription subscription in funcSubscriptions[subjectId])
                 {
-                    retval[i++] = (R)subscription.Invoke(message);
+                    retval[i++] = (R)subscription.InvokeFunc(message);
                 }
 
                 if (id != null && global > 0)
@@ -109,21 +121,39 @@ namespace HHG.Messages
 
             #region Action Subscriptions
 
-            public void Subscribe<T>(Action<T> callback) where T : class
+            public void Subscribe(object id, Action callback)
             {
-                Subscribe(null, callback);
+                SubscribeInternal<object>(id, callback);
             }
 
-            public void Subscribe<T>(object id, Action<T> callback) where T : class
+            public void Subscribe<T>(Action<T> callback)
             {
-                Action<object> wrappedCallback = args => callback((T)args);
+                SubscribeInternal<T>(null, callback);
+            }
+
+            public void Subscribe<T>(object id, Action<T> callback)
+            {
+                SubscribeInternal<T>(id, callback);
+            }
+
+            protected void SubscribeInternal<T>(object id, Delegate callback)
+            {
+                Action<object> wrappedCallback = default;// = arg => callback((T)arg);
+                if (callback is Action action)
+                {
+                    wrappedCallback = arg => action();
+                }
+                else if (callback is Action<T> actionWithParam)
+                {
+                    wrappedCallback = arg => actionWithParam((T)arg);
+                }
                 SubjectId subjectId = new SubjectId(typeof(T), id);
                 SubscriptionId subscriptionId = new SubscriptionId(subjectId, callback);
-                ActionSubscription subscription = new ActionSubscription(subscriptionId, wrappedCallback);
+                Subscription subscription = new Subscription(subscriptionId, wrappedCallback);
 
                 if (!actionSubscriptions.ContainsKey(subjectId))
                 {
-                    actionSubscriptions.Add(subjectId, new List<ActionSubscription>());
+                    actionSubscriptions.Add(subjectId, new List<Subscription>());
                 }
 
                 if (!actionSubscriptions[subjectId].Contains(subscription))
@@ -132,14 +162,24 @@ namespace HHG.Messages
                 }
             }
 
-            public void Unsubscribe<T>(Action<T> callback) where T : class
+            public void Unsubscribe(object id, Action callback)
             {
-                Unsubscribe(null, callback);
+                UnsubscribeInternal<object>(id, callback);
             }
 
-            public void Unsubscribe<T>(object id, Action<T> callback) where T : class
+            public void Unsubscribe<T>(Action<T> callback)
             {
-                Action<object> wrappedCallback = args => callback((T)args);
+                UnsubscribeInternal<T>(null, callback);
+            }
+
+            public void Unsubscribe<T>(object id, Action<T> callback)
+            {
+                UnsubscribeInternal<T>(id, callback);
+            }
+
+            public void UnsubscribeInternal<T>(object id, Delegate callback)
+            {
+                //Action<object> wrappedCallback = arg => callback((T)arg);
                 SubjectId subjectId = new SubjectId(typeof(T), id);
                 SubscriptionId subscriptionId = new SubscriptionId(subjectId, callback);
 
@@ -162,21 +202,21 @@ namespace HHG.Messages
 
             #region Func Subscriptions
 
-            public void Subscribe<T, R>(Func<T, R> callback) where T : class
+            public void Subscribe<T, R>(Func<T, R> callback)
             {
                 Subscribe(null, callback);
             }
 
-            public void Subscribe<T, R>(object id, Func<T, R> callback) where T : class
+            public void Subscribe<T, R>(object id, Func<T, R> callback)
             {
                 Func<object, object> wrappedCallback = args => callback((T)args);
                 SubjectId subjectId = new SubjectId(typeof(T), id);
                 SubscriptionId subscriptionId = new SubscriptionId(subjectId, callback);
-                FuncSubscription subscription = new FuncSubscription(subscriptionId, wrappedCallback);
+                Subscription subscription = new Subscription(subscriptionId, wrappedCallback);
 
                 if (!funcSubscriptions.ContainsKey(subjectId))
                 {
-                    funcSubscriptions.Add(subjectId, new List<FuncSubscription>());
+                    funcSubscriptions.Add(subjectId, new List<Subscription>());
                 }
 
                 if (!funcSubscriptions[subjectId].Contains(subscription))
@@ -185,12 +225,12 @@ namespace HHG.Messages
                 }
             }
 
-            public void Unsubscribe<T, R>(Func<T, R> callback) where T : class
+            public void Unsubscribe<T, R>(Func<T, R> callback)
             {
                 Unsubscribe(null, callback);
             }
 
-            public void Unsubscribe<T, R>(object id, Func<T, R> callback) where T : class
+            public void Unsubscribe<T, R>(object id, Func<T, R> callback)
             {
                 Func<object, object> wrappedCallback = args => callback((T)args);
                 SubjectId subjectId = new SubjectId(typeof(T), id);
