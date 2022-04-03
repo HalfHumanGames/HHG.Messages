@@ -21,6 +21,6 @@
   },
   "type": "library",
   "dependencies": {
-    "com.halfhumangames.common": "https://github.com/HalfHumanGames/Common.git"
+    "com.halfhumangames.common": "1.0.0"
   }
 }
