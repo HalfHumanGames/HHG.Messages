@@ -138,7 +138,7 @@ namespace HHG.Messages
 
             protected void SubscribeInternal<T>(object id, Delegate callback)
             {
-                Action<object> wrappedCallback = default;// = arg => callback((T)arg);
+                Action<object> wrappedCallback = default;
                 if (callback is Action action)
                 {
                     wrappedCallback = arg => action();
@@ -179,7 +179,6 @@ namespace HHG.Messages
 
             public void UnsubscribeInternal<T>(object id, Delegate callback)
             {
-                //Action<object> wrappedCallback = arg => callback((T)arg);
                 SubjectId subjectId = new SubjectId(typeof(T), id);
                 SubscriptionId subscriptionId = new SubscriptionId(subjectId, callback);
 
