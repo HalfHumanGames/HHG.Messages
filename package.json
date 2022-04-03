@@ -19,5 +19,8 @@
     "email": "contact@halfhumangames.com",
     "url": "https://halfhumangames.com/"
   },
-  "type": "library"
+  "type": "library",
+  "dependencies": {
+    "com.halfhumangames.common": "https://github.com/HalfHumanGames/Common.git"
+  }
 }
