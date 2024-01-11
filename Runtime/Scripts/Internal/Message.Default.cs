@@ -40,14 +40,14 @@ namespace HHG.Messages
 
             #endregion
 
-            #region Request
+            #region Publish
 
-            public R[] Request<R>(object message)
+            public R[] Publish<R>(object message)
             {
-                return Request<R>(null, message);
+                return Publish<R>(null, message);
             }
 
-            public R[] Request<R>(object id, object message)
+            public R[] Publish<R>(object id, object message)
             {
                 Type type = message.GetType();
 
@@ -77,7 +77,7 @@ namespace HHG.Messages
 
                 if (id != null && global > 0)
                 {
-                    Array.Copy(Request<R>(null, message), 0, retval, i, global);
+                    Array.Copy(Publish<R>(null, message), 0, retval, i, global);
                 }
 
                 return retval;
@@ -156,7 +156,7 @@ namespace HHG.Messages
 
             #endregion
 
-            #region Subscribe (Requests)
+            #region Subscribe (Publishs)
 
             public void Subscribe<T, R>(Func<T, R> callback)
             {

@@ -25,16 +25,16 @@ namespace HHG.Messages
 
             #endregion
 
-            #region Request
+            #region Publish
 
-            public Task<R[]> RequestAsync<R>(object message)
+            public Task<R[]> PublishAsync<R>(object message)
             {
-                return Task.FromResult(this.message.Request<R>(message));
+                return Task.FromResult(this.message.Publish<R>(message));
             }
 
-            public Task<R[]> RequestAsync<R>(object id, object message)
+            public Task<R[]> PublishAsync<R>(object id, object message)
             {
-                return Task.FromResult(this.message.Request<R>(id, message));
+                return Task.FromResult(this.message.Publish<R>(id, message));
             }
 
             #endregion
@@ -67,7 +67,7 @@ namespace HHG.Messages
 
             #endregion
 
-            #region Subscribe (Requests)
+            #region Subscribe (Publishs)
 
             public Task SubscribeAsync<T, R>(Func<T, R> callback)
             {

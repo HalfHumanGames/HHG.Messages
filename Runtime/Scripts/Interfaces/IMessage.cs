@@ -11,10 +11,10 @@ namespace HHG.Messages
 
         #endregion
 
-        #region Request
+        #region Publish
 
-        R[] Request<R>(object message);
-        R[] Request<R>(object id, object message);
+        R[] Publish<R>(object message);
+        R[] Publish<R>(object id, object message);
 
         #endregion
 
@@ -27,7 +27,7 @@ namespace HHG.Messages
 
         #endregion
 
-        #region Subscribe (Request)
+        #region Subscribe (Publish)
 
         void Subscribe<T, R>(Func<T, R> callback);
         void Subscribe<T, R>(object id, Func<T, R> callback);

@@ -12,10 +12,10 @@ namespace HHG.Messages
 
         #endregion
 
-        #region Request
+        #region Publish
 
-        Task<R[]> RequestAsync<R>(object message);
-        Task<R[]> RequestAsync<R>(object id, object message);
+        Task<R[]> PublishAsync<R>(object message);
+        Task<R[]> PublishAsync<R>(object id, object message);
 
         #endregion
 
@@ -28,7 +28,7 @@ namespace HHG.Messages
 
         #endregion
 
-        #region Subscribe (Request)
+        #region Subscribe (Publish)
 
         Task SubscribeAsync<T, R>(Func<T, R> callback);
         Task SubscribeAsync<T, R>(object id, Func<T, R> callback);
