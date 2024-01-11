@@ -6,37 +6,30 @@ namespace HHG.Messages
     {
         public static IMessage Provider { get; set; } = new Default();
 
-        #region Action Publishing
+        #region Publish
 
-        public static void Publish(object id) => Provider.Publish(id);
-        public static void Publish<T>() => Provider.Publish<T>();
-        public static void Publish<T>(object id) => Provider.Publish<T>(id);
-        public static void Publish<T>(T message) => Provider.Publish(message);
-        public static void Publish<T>(object id, T message) => Provider.Publish(id, message);
+        public static void Publish(object message) => Provider.Publish(message);
+        public static void Publish(object id, object message) => Provider.Publish(id, message);
 
         #endregion
 
-        #region Func Publishing
+        #region Request
 
-        public static R[] Publish<T, R>() => Provider.Publish<T, R>();
-        public static R[] Publish<T, R>(object id) => Provider.Publish<T, R>(id);
-        public static R[] Publish<T, R>(T message) => Provider.Publish<T, R>(message);
-        public static R[] Publish<T, R>(object id, T message) => Provider.Publish<T, R>(id, message);
+        public static R[] Request<R>(object message) => Provider.Request<R>(message);
+        public static R[] Request<R>(object id, object message) => Provider.Request<R>(id, message);
 
         #endregion
 
-        #region Action Subscriptions
+        #region Subscribe (Publish)
 
-        public static void Subscribe(object id, Action callback) => Provider.Subscribe(id, callback);
         public static void Subscribe<T>(Action<T> callback) => Provider.Subscribe(callback);
         public static void Subscribe<T>(object id, Action<T> callback) => Provider.Subscribe(id, callback);
-        public static void Unsubscribe(object id, Action callback) => Provider.Unsubscribe(id, callback);
         public static void Unsubscribe<T>(Action<T> callback) => Provider.Unsubscribe(callback);
         public static void Unsubscribe<T>(object id, Action<T> callback) => Provider.Unsubscribe(id, callback);
 
         #endregion
 
-        #region Func Subscriptions
+        #region Subscribe (Request)
 
         public static void Subscribe<T, R>(Func<T, R> callback) => Provider.Subscribe(callback);
         public static void Subscribe<T, R>(object id, Func<T, R> callback) => Provider.Subscribe(id, callback);

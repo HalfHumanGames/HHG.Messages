@@ -5,37 +5,30 @@ namespace HHG.Messages
 {
     public interface IMessageAsync
     {
-        #region Action Publishing
+        #region Publish
 
         Task PublishAsync(object id);
-        Task PublishAsync<T>();
-        Task PublishAsync<T>(object id);
-        Task PublishAsync<T>(T message);
-        Task PublishAsync<T>(object id, T message);
+        Task PublishAsync(object id, object message);
 
         #endregion
 
-        #region Func Publishing
+        #region Request
 
-        Task<R[]> PublishAsync<T, R>();
-        Task<R[]> PublishAsync<T, R>(object id);
-        Task<R[]> PublishAsync<T, R>(T message);
-        Task<R[]> PublishAsync<T, R>(object id, T message);
+        Task<R[]> RequestAsync<R>(object message);
+        Task<R[]> RequestAsync<R>(object id, object message);
 
         #endregion
 
-        #region Action Subscriptions
+        #region Subscribe (Publish)
 
-        Task SubscribeAsync(object id, Action callback);
         Task SubscribeAsync<T>(Action<T> callback);
         Task SubscribeAsync<T>(object id, Action<T> callback);
-        Task UnsubscribeAsync(object id, Action callback);
         Task UnsubscribeAsync<T>(Action<T> callback);
         Task UnsubscribeAsync<T>(object id, Action<T> callback);
 
         #endregion
 
-        #region Func Subscriptions
+        #region Subscribe (Request)
 
         Task SubscribeAsync<T, R>(Func<T, R> callback);
         Task SubscribeAsync<T, R>(object id, Func<T, R> callback);

@@ -9,33 +9,15 @@ namespace HHG.Messages
         {
             private Default message = new Default();
 
-            #region Action Publishing
+            #region Publish
 
-            public Task PublishAsync(object id)
-            {
-                message.Publish(id);
-                return Task.CompletedTask;
-            }
-
-            public Task PublishAsync<T>()
-            {
-                message.Publish<T>();
-                return Task.CompletedTask;
-            }
-
-            public Task PublishAsync<T>(object id)
-            {
-                message.Publish<T>(id);
-                return Task.CompletedTask;
-            }
-
-            public Task PublishAsync<T>(T message)
+            public Task PublishAsync(object message)
             {
                 this.message.Publish(message);
                 return Task.CompletedTask;
             }
 
-            public Task PublishAsync<T>(object id, T message)
+            public Task PublishAsync(object id, object message)
             {
                 this.message.Publish(id, message);
                 return Task.CompletedTask;
@@ -43,37 +25,21 @@ namespace HHG.Messages
 
             #endregion
 
-            #region Func Publishing
+            #region Request
 
-            public Task<R[]> PublishAsync<T, R>()
+            public Task<R[]> RequestAsync<R>(object message)
             {
-                return Task.FromResult(message.Publish<T, R>());
+                return Task.FromResult(this.message.Request<R>(message));
             }
 
-            public Task<R[]> PublishAsync<T, R>(object id)
+            public Task<R[]> RequestAsync<R>(object id, object message)
             {
-                return Task.FromResult(message.Publish<T, R>(id));
-            }
-
-            public Task<R[]> PublishAsync<T, R>(T message)
-            {
-                return Task.FromResult(this.message.Publish<T, R>(message));
-            }
-
-            public Task<R[]> PublishAsync<T, R>(object id, T message)
-            {
-                return Task.FromResult(this.message.Publish<T, R>(id, message));
+                return Task.FromResult(this.message.Request<R>(id, message));
             }
 
             #endregion
 
-            #region Action Subscriptions
-
-            public Task SubscribeAsync(object id, Action callback)
-            {
-                message.Subscribe(id, callback);
-                return Task.CompletedTask;
-            }
+            #region Subscribe (Publishes)
 
             public Task SubscribeAsync<T>(Action<T> callback)
             {
@@ -84,12 +50,6 @@ namespace HHG.Messages
             public Task SubscribeAsync<T>(object id, Action<T> callback)
             {
                 message.Subscribe(id, callback);
-                return Task.CompletedTask;
-            }
-
-            public Task UnsubscribeAsync(object id, Action callback)
-            {
-                message.Unsubscribe(id, callback);
                 return Task.CompletedTask;
             }
 
@@ -107,7 +67,7 @@ namespace HHG.Messages
 
             #endregion
 
-            #region Func Subscriptions
+            #region Subscribe (Requests)
 
             public Task SubscribeAsync<T, R>(Func<T, R> callback)
             {

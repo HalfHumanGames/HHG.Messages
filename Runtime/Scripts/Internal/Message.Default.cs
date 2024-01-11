@@ -11,40 +11,16 @@ namespace HHG.Messages
             private static readonly Dictionary<SubjectId, List<Subscription>> actionSubscriptions = new Dictionary<SubjectId, List<Subscription>>();
             private static readonly Dictionary<SubjectId, List<Subscription>> funcSubscriptions = new Dictionary<SubjectId, List<Subscription>>();
 
-            #region Action Publishing
+            #region Publish
 
-            public void Publish(object id)
+            public void Publish(object message)
             {
-                Publish<object>(id, null);
+                Publish(null, message);
             }
 
-            public void Publish<T>()
+            public void Publish(object id, object message)
             {
-                T message = Activator.CreateInstance<T>();
-                Publish(message);
-            }
-
-            public void Publish<T>(object id)
-            {
-                T message = Activator.CreateInstance<T>();
-                Publish(id, message);
-            }
-
-            public void Publish<T>(T message)
-            {
-                if (typeof(T).IsPrimitive || typeof(T) == typeof(string))
-                {
-                    Publish((object) message);
-                } 
-                else
-                {
-                    Publish(null, message);
-                }
-            }
-
-            public void Publish<T>(object id, T message)
-            {
-                SubjectId subjectId = new SubjectId(typeof(T), id);
+                SubjectId subjectId = new SubjectId(message.GetType(), id);
 
                 if (!actionSubscriptions.ContainsKey(subjectId))
                 {
@@ -64,28 +40,18 @@ namespace HHG.Messages
 
             #endregion
 
-            #region Func Publishing
+            #region Request
 
-            public R[] Publish<T, R>()
+            public R[] Request<R>(object message)
             {
-                T message = Activator.CreateInstance<T>();
-                return Publish<T, R>(message);
+                return Request<R>(null, message);
             }
 
-            public R[] Publish<T, R>(object id)
+            public R[] Request<R>(object id, object message)
             {
-                T message = Activator.CreateInstance<T>();
-                return Publish<T, R>(id, message);
-            }
+                Type type = message.GetType();
 
-            public R[] Publish<T, R>(T message)
-            {
-                return Publish<T, R>(null, message);
-            }
-
-            public R[] Publish<T, R>(object id, T message)
-            {
-                SubjectId subjectId = new SubjectId(typeof(T), id);
+                SubjectId subjectId = new SubjectId(type, id);
 
                 if (!funcSubscriptions.ContainsKey(subjectId))
                 {
@@ -96,7 +62,7 @@ namespace HHG.Messages
                 int size = funcSubscriptions[subjectId].Count;
                 if (id != null)
                 {
-                    SubjectId nullSubjectId = new SubjectId(typeof(T), null);
+                    SubjectId nullSubjectId = new SubjectId(type, null);
                     global = funcSubscriptions[nullSubjectId].Count;
                     size += global;
                 }
@@ -111,7 +77,7 @@ namespace HHG.Messages
 
                 if (id != null && global > 0)
                 {
-                    Array.Copy(Publish<T, R>(null, message), 0, retval, i, global);
+                    Array.Copy(Request<R>(null, message), 0, retval, i, global);
                 }
 
                 return retval;
@@ -119,12 +85,8 @@ namespace HHG.Messages
 
             #endregion
 
-            #region Action Subscriptions
+            #region Subscribe (Publishes)
 
-            public void Subscribe(object id, Action callback)
-            {
-                SubscribeInternal<object>(id, callback);
-            }
 
             public void Subscribe<T>(Action<T> callback)
             {
@@ -162,11 +124,6 @@ namespace HHG.Messages
                 }
             }
 
-            public void Unsubscribe(object id, Action callback)
-            {
-                UnsubscribeInternal<object>(id, callback);
-            }
-
             public void Unsubscribe<T>(Action<T> callback)
             {
                 UnsubscribeInternal<T>(null, callback);
@@ -199,7 +156,7 @@ namespace HHG.Messages
 
             #endregion
 
-            #region Func Subscriptions
+            #region Subscribe (Requests)
 
             public void Subscribe<T, R>(Func<T, R> callback)
             {
