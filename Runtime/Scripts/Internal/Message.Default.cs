@@ -55,7 +55,7 @@ namespace HHG.Messages
 
                 if (!funcSubscriptions.ContainsKey(subjectId))
                 {
-                    return default;
+                    return new R[0];
                 }
 
                 int global = 0;
