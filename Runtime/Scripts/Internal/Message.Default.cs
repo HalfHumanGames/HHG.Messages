@@ -27,8 +27,9 @@ namespace HHG.Messages
                     return;
                 }
 
-                foreach (Subscription subscription in actionSubscriptions[subjectId])
+                for (int i = 0; i < actionSubscriptions[subjectId].Count; i++)
                 {
+                    Subscription subscription = actionSubscriptions[subjectId][i];
                     subscription.InvokeAction(message);
                 }
 
@@ -70,8 +71,9 @@ namespace HHG.Messages
                 R[] retval = new R[size];
 
                 int i = 0;
-                foreach (Subscription subscription in funcSubscriptions[subjectId])
+                for (int i1 = 0; i1 < funcSubscriptions[subjectId].Count; i1++)
                 {
+                    Subscription subscription = funcSubscriptions[subjectId][i1];
                     retval[i++] = (R)subscription.InvokeFunc(message);
                 }
 
