@@ -17,9 +17,15 @@ namespace HHG.Messages
                 return Task.CompletedTask;
             }
 
-            public Task PublishAsync(object id, object message)
+            public Task PublishAsync(object id, object message, PublishMode mode = PublishMode.Broadcast)
             {
-                this.message.Publish(id, message);
+                this.message.Publish(id, message, mode);
+                return Task.CompletedTask;
+            }
+
+            public Task SendAsync(object id, object message)
+            {
+                this.message.Send(id, message);
                 return Task.CompletedTask;
             }
 
@@ -32,9 +38,14 @@ namespace HHG.Messages
                 return Task.FromResult(this.message.Publish<R>(message));
             }
 
-            public Task<R[]> PublishAsync<R>(object id, object message)
+            public Task<R[]> PublishAsync<R>(object id, object message, PublishMode mode = PublishMode.Broadcast)
             {
-                return Task.FromResult(this.message.Publish<R>(id, message));
+                return Task.FromResult(this.message.Publish<R>(id, message, mode));
+            }
+
+            public Task<R[]> SendAsync<R>(object id, object message)
+            {
+                return Task.FromResult(this.message.Send<R>(id, message));
             }
 
             #endregion

@@ -9,14 +9,16 @@ namespace HHG.Messages
         #region Publish
 
         public static void Publish(object message) => Provider.Publish(message);
-        public static void Publish(object id, object message) => Provider.Publish(id, message);
+        public static void Publish(object id, object message, PublishMode mode = PublishMode.Broadcast) => Provider.Publish(id, message, mode);
+        public static void Send(object id, object message) => Provider.Send(id, message);
 
         #endregion
 
         #region Publish
 
         public static R[] Publish<R>(object message) => Provider.Publish<R>(message);
-        public static R[] Publish<R>(object id, object message) => Provider.Publish<R>(id, message);
+        public static R[] Publish<R>(object id, object message, PublishMode mode = PublishMode.Broadcast) => Provider.Publish<R>(id, message, mode);
+        public static R[] Send<R>(object id, object message) => Provider.Send<R>(id, message);
 
         #endregion
 

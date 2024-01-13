@@ -8,14 +8,16 @@ namespace HHG.Messages
         #region Publish
 
         Task PublishAsync(object id);
-        Task PublishAsync(object id, object message);
+        Task PublishAsync(object id, object message, PublishMode mode = PublishMode.Broadcast);
+        Task SendAsync(object id, object message);
 
         #endregion
 
         #region Publish
 
         Task<R[]> PublishAsync<R>(object message);
-        Task<R[]> PublishAsync<R>(object id, object message);
+        Task<R[]> PublishAsync<R>(object id, object message, PublishMode mode = PublishMode.Broadcast);
+        Task<R[]> SendAsync<R>(object id, object message);
 
         #endregion
 
