@@ -7,14 +7,16 @@ namespace HHG.Messages
         #region Publish
 
         void Publish(object message);
-        void Publish(object id, object message);
+        void Publish(object id, object message, PublishMode mode = PublishMode.Broadcast);
+        void Send(object id, object message);
 
         #endregion
 
         #region Publish
 
         R[] Publish<R>(object message);
-        R[] Publish<R>(object id, object message);
+        R[] Publish<R>(object id, object message, PublishMode mode = PublishMode.Broadcast);
+        R[] Send<R>(object id, object message);
 
         #endregion
 

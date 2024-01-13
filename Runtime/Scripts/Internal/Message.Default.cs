@@ -18,7 +18,7 @@ namespace HHG.Messages
                 Publish(null, message);
             }
 
-            public void Publish(object id, object message)
+            public void Publish(object id, object message, PublishMode mode = PublishMode.Broadcast)
             {
                 SubjectId subjectId = new SubjectId(message.GetType(), id);
 
@@ -33,10 +33,15 @@ namespace HHG.Messages
                     subscription.InvokeAction(message);
                 }
 
-                if (id != null)
+                if (id != null && mode == PublishMode.Broadcast)
                 {
                     Publish(null, message);
                 }
+            }
+
+            public void Send(object id, object message)
+            {
+                Publish(id, message, PublishMode.Send);
             }
 
             #endregion
@@ -48,7 +53,7 @@ namespace HHG.Messages
                 return Publish<R>(null, message);
             }
 
-            public R[] Publish<R>(object id, object message)
+            public R[] Publish<R>(object id, object message, PublishMode mode = PublishMode.Broadcast)
             {
                 Type type = message.GetType();
 
@@ -77,12 +82,17 @@ namespace HHG.Messages
                     retval[i++] = (R)subscription.InvokeFunc(message);
                 }
 
-                if (id != null && global > 0)
+                if (id != null && global > 0 && mode == PublishMode.Broadcast)
                 {
                     Array.Copy(Publish<R>(null, message), 0, retval, i, global);
                 }
 
                 return retval;
+            }
+
+            public R[] Send<R>(object id, object message)
+            {
+                return Publish<R>(id, message, PublishMode.Send);
             }
 
             #endregion

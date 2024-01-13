@@ -10,14 +10,16 @@ namespace HHG.Messages
         #region Publish
 
         public static Task PublishAsync(object message) => AsyncProvider.PublishAsync(message);
-        public static Task PublishAsync(object id, object message) => AsyncProvider.PublishAsync(id, message);
+        public static Task PublishAsync(object id, object message, PublishMode mode = PublishMode.Broadcast) => AsyncProvider.PublishAsync(id, message, mode);
+        public static Task SendAsync(object id, object message) => AsyncProvider.SendAsync(id, message);
 
         #endregion
 
         #region Publish
 
         public static Task<R[]> PublishAsync<R>(object message) => AsyncProvider.PublishAsync<R>(message);
-        public static Task<R[]> PublishAsync<R>(object id, object message) => AsyncProvider.PublishAsync<R>(id, message);
+        public static Task<R[]> PublishAsync<R>(object id, object message, PublishMode mode = PublishMode.Broadcast) => AsyncProvider.PublishAsync<R>(id, message, mode);
+        public static Task<R[]> SendAsync<R>(object id, object message) => AsyncProvider.SendAsync<R>(id, message);
 
         #endregion
 
