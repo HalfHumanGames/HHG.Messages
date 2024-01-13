@@ -66,7 +66,7 @@ namespace HHG.Messages
 
                 int global = 0;
                 int size = funcSubscriptions[subjectId].Count;
-                if (id != null)
+                if (id != null && mode == PublishMode.Broadcast)
                 {
                     SubjectId nullSubjectId = new SubjectId(type, null);
                     global = funcSubscriptions[nullSubjectId].Count;
@@ -82,7 +82,7 @@ namespace HHG.Messages
                     retval[i++] = (R)subscription.InvokeFunc(message);
                 }
 
-                if (id != null && global > 0 && mode == PublishMode.Broadcast)
+                if (id != null && global > 0)
                 {
                     Array.Copy(Publish<R>(null, message), 0, retval, i, global);
                 }
