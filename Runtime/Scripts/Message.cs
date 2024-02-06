@@ -10,7 +10,7 @@ namespace HHG.Messages
 
         public static void Publish(object message) => Provider.Publish(message);
         public static void Publish(object id, object message, PublishMode mode = PublishMode.Broadcast) => Provider.Publish(id, message, mode);
-        public static void Send(object id, object message) => Provider.Send(id, message);
+        public static void PublishTo(object id, object message) => Provider.PublishTo(id, message);
 
         #endregion
 
@@ -18,15 +18,15 @@ namespace HHG.Messages
 
         public static R[] Publish<R>(object message) => Provider.Publish<R>(message);
         public static R[] Publish<R>(object id, object message, PublishMode mode = PublishMode.Broadcast) => Provider.Publish<R>(id, message, mode);
-        public static R[] Send<R>(object id, object message) => Provider.Send<R>(id, message);
+        public static R[] PublishTo<R>(object id, object message) => Provider.PublishTo<R>(id, message);
 
         #endregion
 
         #region Request
 
-        public static R Request<R>(IRequest<R> message) => Provider.Request(message);
-        public static R Request<R>(object id, IRequest<R> message, PublishMode mode = PublishMode.Broadcast) => Provider.Request(id, message, mode);
-        public static R Retrieve<R>(object id, IRequest<R> message) => Provider.Retrieve(id, message);
+        public static R Publish<R>(IRequest<R> message) => Provider.Publish(message);
+        public static R Publish<R>(object id, IRequest<R> message, PublishMode mode = PublishMode.Broadcast) => Provider.Publish(id, message, mode);
+        public static R PublishTo<R>(object id, IRequest<R> message) => Provider.PublishTo(id, message);
 
         #endregion
 

@@ -23,9 +23,9 @@ namespace HHG.Messages
                 return Task.CompletedTask;
             }
 
-            public Task SendAsync(object id, object message)
+            public Task PublishToAsync(object id, object message)
             {
-                this.message.Send(id, message);
+                this.message.PublishTo(id, message);
                 return Task.CompletedTask;
             }
 
@@ -43,28 +43,28 @@ namespace HHG.Messages
                 return Task.FromResult(this.message.Publish<R>(id, message, mode));
             }
 
-            public Task<R[]> SendAsync<R>(object id, object message)
+            public Task<R[]> PublishToAsync<R>(object id, object message)
             {
-                return Task.FromResult(this.message.Send<R>(id, message));
+                return Task.FromResult(this.message.PublishTo<R>(id, message));
             }
 
             #endregion
 
             #region Request
 
-            public Task<R> RequestAsync<R>(IRequest<R> request)
+            public Task<R> PublishAsync<R>(IRequest<R> request)
             {
-                return Task.FromResult(message.Request(request));
+                return Task.FromResult(message.Publish(request));
             }
 
-            public Task<R> RequestAsync<R>(object id, IRequest<R> request, PublishMode mode = PublishMode.Broadcast)
+            public Task<R> PublishAsync<R>(object id, IRequest<R> request, PublishMode mode = PublishMode.Broadcast)
             {
-                return Task.FromResult(message.Request(id, request, mode));
+                return Task.FromResult(message.Publish(id, request, mode));
             }
 
-            public Task<R> RetrieveAsync<R>(object id, IRequest<R> request)
+            public Task<R> PublishToAsync<R>(object id, IRequest<R> request)
             {
-                return Task.FromResult(message.Retrieve(id, request));
+                return Task.FromResult(message.PublishTo(id, request));
             }
 
             #endregion

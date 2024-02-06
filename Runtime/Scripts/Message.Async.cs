@@ -11,7 +11,7 @@ namespace HHG.Messages
 
         public static Task PublishAsync(object message) => AsyncProvider.PublishAsync(message);
         public static Task PublishAsync(object id, object message, PublishMode mode = PublishMode.Broadcast) => AsyncProvider.PublishAsync(id, message, mode);
-        public static Task SendAsync(object id, object message) => AsyncProvider.SendAsync(id, message);
+        public static Task PublishToAsync(object id, object message) => AsyncProvider.PublishToAsync(id, message);
 
         #endregion
 
@@ -19,15 +19,15 @@ namespace HHG.Messages
 
         public static Task<R[]> PublishAsync<R>(object message) => AsyncProvider.PublishAsync<R>(message);
         public static Task<R[]> PublishAsync<R>(object id, object message, PublishMode mode = PublishMode.Broadcast) => AsyncProvider.PublishAsync<R>(id, message, mode);
-        public static Task<R[]> SendAsync<R>(object id, object message) => AsyncProvider.SendAsync<R>(id, message);
+        public static Task<R[]> PublishToAsync<R>(object id, object message) => AsyncProvider.PublishToAsync<R>(id, message);
 
         #endregion
 
         #region Request
 
-        public static Task<R> RequestAsync<R>(IRequest<R> message) => AsyncProvider.RequestAsync(message);
-        public static Task<R> RequestAsync<R>(object id, IRequest<R> message, PublishMode mode = PublishMode.Broadcast) => AsyncProvider.RequestAsync(id, message, mode);
-        public static Task<R> RetrieveAsync<R>(object id, IRequest<R> message) => AsyncProvider.RetrieveAsync(id, message);
+        public static Task<R> PublishAsync<R>(IRequest<R> message) => AsyncProvider.PublishAsync(message);
+        public static Task<R> PublishAsync<R>(object id, IRequest<R> message, PublishMode mode = PublishMode.Broadcast) => AsyncProvider.PublishAsync(id, message, mode);
+        public static Task<R> PublishToAsync<R>(object id, IRequest<R> message) => AsyncProvider.PublishToAsync(id, message);
 
         #endregion
 

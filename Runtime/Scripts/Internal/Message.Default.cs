@@ -39,7 +39,7 @@ namespace HHG.Messages
                 }
             }
 
-            public void Send(object id, object message)
+            public void PublishTo(object id, object message)
             {
                 Publish(id, message, PublishMode.Narrowcast);
             }
@@ -90,7 +90,7 @@ namespace HHG.Messages
                 return retval;
             }
 
-            public R[] Send<R>(object id, object message)
+            public R[] PublishTo<R>(object id, object message)
             {
                 return Publish<R>(id, message, PublishMode.Narrowcast);
             }
@@ -99,21 +99,21 @@ namespace HHG.Messages
 
             #region Request
 
-            public R Request<R>(IRequest<R> request)
+            public R Publish<R>(IRequest<R> request)
             {
-                Publish(request);
+                Publish((object)request);
                 return request.Response;
             }
 
-            public R Request<R>(object id, IRequest<R> request, PublishMode mode = PublishMode.Broadcast)
+            public R Publish<R>(object id, IRequest<R> request, PublishMode mode = PublishMode.Broadcast)
             {
-                Publish(id, request, mode);
+                Publish(id, (object)request, mode);
                 return request.Response;
             }
 
-            public R Retrieve<R>(object id, IRequest<R> request)
+            public R PublishTo<R>(object id, IRequest<R> request)
             {
-                Send(id, request);
+                PublishTo(id, (object)request);
                 return request.Response;
             }
 

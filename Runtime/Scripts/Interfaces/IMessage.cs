@@ -8,7 +8,7 @@ namespace HHG.Messages
 
         void Publish(object message);
         void Publish(object id, object message, PublishMode mode = PublishMode.Broadcast);
-        void Send(object id, object message);
+        void PublishTo(object id, object message);
 
         #endregion
 
@@ -16,15 +16,15 @@ namespace HHG.Messages
 
         R[] Publish<R>(object message);
         R[] Publish<R>(object id, object message, PublishMode mode = PublishMode.Broadcast);
-        R[] Send<R>(object id, object message);
+        R[] PublishTo<R>(object id, object message);
 
         #endregion
 
         #region Request
 
-        R Request<R>(IRequest<R> message);
-        R Request<R>(object id, IRequest<R> message, PublishMode mode = PublishMode.Broadcast);
-        R Retrieve<R>(object id, IRequest<R> message);
+        R Publish<R>(IRequest<R> message);
+        R Publish<R>(object id, IRequest<R> message, PublishMode mode = PublishMode.Broadcast);
+        R PublishTo<R>(object id, IRequest<R> message);
 
         #endregion
 

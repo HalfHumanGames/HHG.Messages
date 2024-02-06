@@ -9,7 +9,7 @@ namespace HHG.Messages
 
         Task PublishAsync(object id);
         Task PublishAsync(object id, object message, PublishMode mode = PublishMode.Broadcast);
-        Task SendAsync(object id, object message);
+        Task PublishToAsync(object id, object message);
 
         #endregion
 
@@ -17,15 +17,15 @@ namespace HHG.Messages
 
         Task<R[]> PublishAsync<R>(object message);
         Task<R[]> PublishAsync<R>(object id, object message, PublishMode mode = PublishMode.Broadcast);
-        Task<R[]> SendAsync<R>(object id, object message);
+        Task<R[]> PublishToAsync<R>(object id, object message);
 
         #endregion
 
         #region Request
 
-        Task<R> RequestAsync<R>(IRequest<R> message);
-        Task<R> RequestAsync<R>(object id, IRequest<R> message, PublishMode mode = PublishMode.Broadcast);
-        Task<R> RetrieveAsync<R>(object id, IRequest<R> message);
+        Task<R> PublishAsync<R>(IRequest<R> message);
+        Task<R> PublishAsync<R>(object id, IRequest<R> message, PublishMode mode = PublishMode.Broadcast);
+        Task<R> PublishToAsync<R>(object id, IRequest<R> message);
 
         #endregion
 
