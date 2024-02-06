@@ -21,6 +21,14 @@ namespace HHG.Messages
 
         #endregion
 
+        #region Request
+
+        Task<R> RequestAsync<R>(IRequest<R> message);
+        Task<R> RequestAsync<R>(object id, IRequest<R> message, PublishMode mode = PublishMode.Broadcast);
+        Task<R> RetrieveAsync<R>(object id, IRequest<R> message);
+
+        #endregion
+
         #region Subscribe (Publish)
 
         Task SubscribeAsync<T>(Action<T> callback);

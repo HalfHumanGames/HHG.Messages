@@ -20,6 +20,14 @@ namespace HHG.Messages
 
         #endregion
 
+        #region Request
+
+        R Request<R>(IRequest<R> message);
+        R Request<R>(object id, IRequest<R> message, PublishMode mode = PublishMode.Broadcast);
+        R Retrieve<R>(object id, IRequest<R> message);
+
+        #endregion
+
         #region Subscribe (Publish)
 
         void Subscribe<T>(Action<T> callback);

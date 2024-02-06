@@ -50,6 +50,25 @@ namespace HHG.Messages
 
             #endregion
 
+            #region Request
+
+            public Task<R> RequestAsync<R>(IRequest<R> request)
+            {
+                return Task.FromResult(message.Request(request));
+            }
+
+            public Task<R> RequestAsync<R>(object id, IRequest<R> request, PublishMode mode = PublishMode.Broadcast)
+            {
+                return Task.FromResult(message.Request(id, request, mode));
+            }
+
+            public Task<R> RetrieveAsync<R>(object id, IRequest<R> request)
+            {
+                return Task.FromResult(message.Retrieve(id, request));
+            }
+
+            #endregion
+
             #region Subscribe (Publishes)
 
             public Task SubscribeAsync<T>(Action<T> callback)
