@@ -1,6 +1,7 @@
 ﻿using HHG.Common;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace HHG.Messages
 {
@@ -115,6 +116,28 @@ namespace HHG.Messages
             {
                 PublishTo(id, (object)request);
                 return request.Response;
+            }
+
+            #endregion
+
+            #region Aggregate
+
+            public R Publish<R>(IAggregate<R> aggregate)
+            {
+                R[] results = Publish<R>((object)aggregate);
+                return results.Aggregate(aggregate.Aggregate);
+            }
+
+            public R Publish<R>(object id, IAggregate<R> aggregate, PublishMode mode = PublishMode.Broadcast)
+            {
+                R[] results = Publish<R>(id, (object)aggregate, mode);
+                return results.Aggregate(aggregate.Aggregate);
+            }
+
+            public R PublishTo<R>(object id, IAggregate<R> aggregate)
+            {
+                R[] results = PublishTo<R>(id, (object)aggregate);
+                return results.Aggregate(aggregate.Aggregate);
             }
 
             #endregion

@@ -30,6 +30,14 @@ namespace HHG.Messages
 
         #endregion
 
+        #region Aggregate
+
+        public static R Publish<R>(IAggregate<R> message) => Provider.Publish(message);
+        public static R Publish<R>(object id, IAggregate<R> message, PublishMode mode = PublishMode.Broadcast) => Provider.Publish(id, message, mode);
+        public static R PublishTo<R>(object id, IAggregate<R> message) => Provider.PublishTo(id, message);
+
+        #endregion
+
         #region Subscribe (Action)
 
         public static void Subscribe<T>(Action<T> callback) => Provider.Subscribe(callback);

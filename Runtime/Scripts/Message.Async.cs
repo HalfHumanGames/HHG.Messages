@@ -31,6 +31,14 @@ namespace HHG.Messages
 
         #endregion
 
+        #region Aggregate
+
+        public static Task<R> PublishAsync<R>(IAggregate<R> message) => AsyncProvider.PublishAsync(message);
+        public static Task<R> PublishAsync<R>(object id, IAggregate<R> message, PublishMode mode = PublishMode.Broadcast) => AsyncProvider.PublishAsync(id, message, mode);
+        public static Task<R> PublishToAsync<R>(object id, IAggregate<R> message) => AsyncProvider.PublishToAsync(id, message);
+
+        #endregion
+
         #region Subscribe (Action)
 
         public static Task SubscribeAsync<T>(Action<T> callback) => AsyncProvider.SubscribeAsync(callback);
