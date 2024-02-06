@@ -22,7 +22,15 @@ namespace HHG.Messages
 
         #endregion
 
-        #region Subscribe (Publish)
+        #region Request
+
+        public static R Request<R>(IRequest<R> message) => Provider.Request(message);
+        public static R Request<R>(object id, IRequest<R> message, PublishMode mode = PublishMode.Broadcast) => Provider.Request(id, message, mode);
+        public static R Retrieve<R>(object id, IRequest<R> message) => Provider.Retrieve(id, message);
+
+        #endregion
+
+        #region Subscribe (Action)
 
         public static void Subscribe<T>(Action<T> callback) => Provider.Subscribe(callback);
         public static void Subscribe<T>(object id, Action<T> callback) => Provider.Subscribe(id, callback);
@@ -31,7 +39,7 @@ namespace HHG.Messages
 
         #endregion
 
-        #region Subscribe (Publish)
+        #region Subscribe (Func)
 
         public static void Subscribe<T, R>(Func<T, R> callback) => Provider.Subscribe(callback);
         public static void Subscribe<T, R>(object id, Func<T, R> callback) => Provider.Subscribe(id, callback);

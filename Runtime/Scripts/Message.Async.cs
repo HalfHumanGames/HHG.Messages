@@ -23,7 +23,15 @@ namespace HHG.Messages
 
         #endregion
 
-        #region Subscribe (Publish)
+        #region Request
+
+        public static Task<R> RequestAsync<R>(IRequest<R> message) => AsyncProvider.RequestAsync(message);
+        public static Task<R> RequestAsync<R>(object id, IRequest<R> message, PublishMode mode = PublishMode.Broadcast) => AsyncProvider.RequestAsync(id, message, mode);
+        public static Task<R> RetrieveAsync<R>(object id, IRequest<R> message) => AsyncProvider.RetrieveAsync(id, message);
+
+        #endregion
+
+        #region Subscribe (Action)
 
         public static Task SubscribeAsync<T>(Action<T> callback) => AsyncProvider.SubscribeAsync(callback);
         public static Task SubscribeAsync<T>(object id, Action<T> callback) => AsyncProvider.SubscribeAsync(id, callback);
@@ -32,7 +40,7 @@ namespace HHG.Messages
 
         #endregion
 
-        #region Subscribe (Publish)
+        #region Subscribe (Func)
 
         public static Task SubscribeAsync<T, R>(Func<T, R> callback) => AsyncProvider.SubscribeAsync(callback);
         public static Task SubscribeAsync<T, R>(object id, Func<T, R> callback) => AsyncProvider.SubscribeAsync(id, callback);
