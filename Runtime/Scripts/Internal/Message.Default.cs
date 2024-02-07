@@ -32,6 +32,11 @@ namespace HHG.Messages
                 {
                     Subscription subscription = actionSubscriptions[subjectId][i];
                     subscription.InvokeAction(message);
+
+                    if (message is ICancellable cancellable && cancellable.IsCancelled)
+                    {
+                        return;
+                    }
                 }
 
                 if (id != null && mode == PublishMode.Broadcast)
@@ -81,6 +86,12 @@ namespace HHG.Messages
                 {
                     Subscription subscription = funcSubscriptions[subjectId][i1];
                     retval[i++] = (R)subscription.InvokeFunc(message);
+
+                    if (message is ICancellable cancellable && cancellable.IsCancelled)
+                    {
+                        Array.Resize(ref retval, i);
+                        return retval;
+                    }
                 }
 
                 if (id != null && global > 0)
