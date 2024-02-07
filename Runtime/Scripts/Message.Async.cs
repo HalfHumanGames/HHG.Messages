@@ -45,23 +45,6 @@ namespace HHG.Messages
 
         #endregion
 
-        #region Select
-
-        public static Task<R> PublishAsync<S, R>(Func<S, R> selector) => AsyncProvider.PublishAsync(selector);
-        public static Task<R> PublishAsync<S, R>(object id, Func<S, R> selector, PublishMode mode = PublishMode.Broadcast) => AsyncProvider.PublishAsync(id, selector, mode);
-        public static Task<R> PublishToAsync<S, R>(object id, Func<S, R> selector) => AsyncProvider.PublishAsync(id, selector);
-
-        #endregion
-
-        #region Subscribe (Select)
-
-        public static Task SubscribeAsync<T>(T source, int order = 0) => AsyncProvider.SubscribeAsync(source, order);
-        public static Task SubscribeAsync<T>(object id, T source, int order = 0) => AsyncProvider.SubscribeAsync(id, source, order);
-        public static Task UnsubscribeAsync<T>(T source) => AsyncProvider.SubscribeAsync(source);
-        public static Task UnsubscribeAsync<T>(object id, T source) => AsyncProvider.SubscribeAsync(id, source);
-
-        #endregion
-
         #region Subscribe (Action)
 
         public static Task SubscribeAsync<T>(Action<T> callback, int order = 0) => AsyncProvider.SubscribeAsync(callback, order);

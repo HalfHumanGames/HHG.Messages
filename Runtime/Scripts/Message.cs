@@ -44,23 +44,6 @@ namespace HHG.Messages
 
         #endregion
 
-        #region Select
-
-        public static R Publish<S, R>(Func<S, R> selector) => Provider.Publish(selector);
-        public static R Publish<S, R>(object id, Func<S, R> selector, PublishMode mode = PublishMode.Broadcast) => Provider.Publish(id, selector, mode);
-        public static R PublishTo<S, R>(object id, Func<S, R> selector) => Provider.Publish(id, selector);
-
-        #endregion
-
-        #region Subscribe (Select)
-
-        public static void Subscribe<T>(T source, int order = 0) => Provider.Subscribe(source, order);
-        public static void Subscribe<T>(object id, T source, int order = 0) => Provider.Subscribe(id, source, order);
-        public static void Unsubscribe<T>(T source) => Provider.Unsubscribe(source);
-        public static void Unsubscribe<T>(object id, T source) => Provider.Unsubscribe(id, source);
-
-        #endregion
-
         #region Subscribe (Action)
 
         public static void Subscribe<T>(Action<T> callback, int order = 0) => Provider.Subscribe(callback, order);
