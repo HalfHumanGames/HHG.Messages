@@ -54,6 +54,8 @@ namespace HHG.Messages
 
         void Subscribe<T>(T source, int order = 0);
         void Subscribe<T>(object id, T source, int order = 0);
+        void Unsubscribe<T>(T source);
+        void Unsubscribe<T>(object id, T source);
 
         #endregion
 

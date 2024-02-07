@@ -56,6 +56,8 @@ namespace HHG.Messages
 
         public static void Subscribe<T>(T source, int order = 0) => Provider.Subscribe(source, order);
         public static void Subscribe<T>(object id, T source, int order = 0) => Provider.Subscribe(id, source, order);
+        public static void Unsubscribe<T>(T source) => Provider.Unsubscribe(source);
+        public static void Unsubscribe<T>(object id, T source) => Provider.Unsubscribe(id, source);
 
         #endregion
 

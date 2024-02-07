@@ -57,6 +57,8 @@ namespace HHG.Messages
 
         public static Task SubscribeAsync<T>(T source, int order = 0) => AsyncProvider.SubscribeAsync(source, order);
         public static Task SubscribeAsync<T>(object id, T source, int order = 0) => AsyncProvider.SubscribeAsync(id, source, order);
+        public static Task UnsubscribeAsync<T>(T source) => AsyncProvider.SubscribeAsync(source);
+        public static Task UnsubscribeAsync<T>(object id, T source) => AsyncProvider.SubscribeAsync(id, source);
 
         #endregion
 

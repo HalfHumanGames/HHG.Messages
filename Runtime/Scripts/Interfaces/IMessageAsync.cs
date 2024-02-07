@@ -55,6 +55,8 @@ namespace HHG.Messages
 
         Task SubscribeAsync<T>(T source, int order = 0);
         Task SubscribeAsync<T>(object id, T source, int order = 0);
+        Task UnsubscribeAsync<T>(T source);
+        Task UnsubscribeAsync<T>(object id, T source);
 
         #endregion
 

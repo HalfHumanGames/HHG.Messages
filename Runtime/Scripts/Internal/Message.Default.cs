@@ -23,7 +23,11 @@ namespace HHG.Messages
             public void Publish(object id, object message, PublishMode mode = PublishMode.Broadcast)
             {
                 SubjectId subjectId = new SubjectId(message.GetType(), id);
+                PublishInternal(subjectId, message, mode);
+            }
 
+            private void PublishInternal(SubjectId subjectId, object message, PublishMode mode = PublishMode.Broadcast)
+            {
                 if (!actionSubscriptions.ContainsKey(subjectId))
                 {
                     return;
@@ -40,7 +44,7 @@ namespace HHG.Messages
                     }
                 }
 
-                if (id != null && mode == PublishMode.Broadcast)
+                if (subjectId.Id != null && mode == PublishMode.Broadcast)
                 {
                     Publish(null, message);
                 }
@@ -62,10 +66,12 @@ namespace HHG.Messages
 
             public R[] Publish<R>(object id, object message, PublishMode mode = PublishMode.Broadcast)
             {
-                Type type = message.GetType();
+                SubjectId subjectId = new SubjectId(message.GetType(), id);
+                return PublishInternal<R>(subjectId, message, mode);
+            }
 
-                SubjectId subjectId = new SubjectId(type, id);
-
+            private R[] PublishInternal<R>(SubjectId subjectId, object message, PublishMode mode = PublishMode.Broadcast)
+            {
                 if (!funcSubscriptions.ContainsKey(subjectId))
                 {
                     return new R[0];
@@ -73,9 +79,9 @@ namespace HHG.Messages
 
                 int global = 0;
                 int size = funcSubscriptions[subjectId].Count;
-                if (id != null && mode == PublishMode.Broadcast)
+                if (subjectId.Id != null && mode == PublishMode.Broadcast)
                 {
-                    SubjectId nullSubjectId = new SubjectId(type, null);
+                    SubjectId nullSubjectId = new SubjectId(subjectId.Type, null);
                     global = funcSubscriptions[nullSubjectId].Count;
                     size += global;
                 }
@@ -95,7 +101,7 @@ namespace HHG.Messages
                     }
                 }
 
-                if (id != null && global > 0)
+                if (subjectId.Id != null && global > 0)
                 {
                     Array.Copy(Publish<R>(null, message), 0, retval, i, global);
                 }
@@ -202,7 +208,7 @@ namespace HHG.Messages
                 SubjectId subjectId = new SubjectId(typeof(S), id);
                 if (sources.ContainsKey(subjectId))
                 {
-                    S source = Publish<S>(sources[subjectId]).FirstOrDefault();
+                    S source = PublishInternal<S>(subjectId, sources[subjectId]).FirstOrDefault();
                     return source == null ? default : selector(source);
                 }
                 return default;
@@ -227,7 +233,20 @@ namespace HHG.Messages
                 SubjectId subjectId = new SubjectId(typeof(S), id);
                 sources[subjectId] = source;
                 Func<S, S> func = _ => source;
-                Subscribe(id, func, order);
+                SubscribeInternal<S>(subjectId, func, order);
+            }
+
+            public void Unsubscribe<S>(S source)
+            {
+                Unsubscribe(null, source);
+            }
+
+            public void Unsubscribe<S>(object id, S source)
+            {
+                SubjectId subjectId = new SubjectId(typeof(S), id);
+                sources.Remove(subjectId);
+                Func<S, S> func = _ => source;
+                UnsubscribeInternal<S>(subjectId, func);
             }
 
             #endregion
@@ -285,6 +304,11 @@ namespace HHG.Messages
             public void UnsubscribeInternal<T>(object id, Delegate callback)
             {
                 SubjectId subjectId = new SubjectId(typeof(T), id);
+                UnsubscribeInternal<T>(subjectId, callback);
+            }
+
+            public void UnsubscribeInternal<T>(SubjectId subjectId, Delegate callback)
+            {
                 SubscriptionId subscriptionId = new SubscriptionId(subjectId, callback);
 
                 if (!actionSubscriptions.ContainsKey(subjectId))
@@ -337,8 +361,13 @@ namespace HHG.Messages
 
             public void Unsubscribe<T, R>(object id, Func<T, R> callback)
             {
-                Func<object, object> wrappedCallback = args => callback((T)args);
                 SubjectId subjectId = new SubjectId(typeof(T), id);
+                UnsubscribeInternal(subjectId, callback);
+            }
+
+            public void UnsubscribeInternal<T, R>(SubjectId subjectId, Func<T, R> callback)
+            {
+                Func<object, object> wrappedCallback = args => callback((T)args);
                 SubscriptionId subscriptionId = new SubscriptionId(subjectId, callback);
 
                 if (!funcSubscriptions.ContainsKey(subjectId))
