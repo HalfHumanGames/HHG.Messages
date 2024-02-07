@@ -25,17 +25,23 @@ namespace HHG.Messages
 
         #region Request
 
-        public static Task<R> PublishAsync<R>(IRequest<R> message) => AsyncProvider.PublishAsync(message);
-        public static Task<R> PublishAsync<R>(object id, IRequest<R> message, PublishMode mode = PublishMode.Broadcast) => AsyncProvider.PublishAsync(id, message, mode);
-        public static Task<R> PublishToAsync<R>(object id, IRequest<R> message) => AsyncProvider.PublishToAsync(id, message);
+        public static Task<R> PublishAsync<R>(IRequest<R> request) => AsyncProvider.PublishAsync(request);
+        public static Task<R> PublishAsync<R>(object id, IRequest<R> request, PublishMode mode = PublishMode.Broadcast) => AsyncProvider.PublishAsync(id, request, mode);
+        public static Task<R> PublishToAsync<R>(object id, IRequest<R> request) => AsyncProvider.PublishToAsync(id, request);
 
         #endregion
 
         #region Aggregate
 
-        public static Task<R> PublishAsync<R>(IAggregate<R> message) => AsyncProvider.PublishAsync(message);
-        public static Task<R> PublishAsync<R>(object id, IAggregate<R> message, PublishMode mode = PublishMode.Broadcast) => AsyncProvider.PublishAsync(id, message, mode);
-        public static Task<R> PublishToAsync<R>(object id, IAggregate<R> message) => AsyncProvider.PublishToAsync(id, message);
+        public static Task<S> PublishAsync<S>(IAggregate<S> aggregate) => AsyncProvider.PublishAsync(aggregate);
+        public static Task<S> PublishAsync<S>(object id, IAggregate<S> aggregate, PublishMode mode = PublishMode.Broadcast) => AsyncProvider.PublishAsync(id, aggregate, mode);
+        public static Task<S> PublishToAsync<S>(object id, IAggregate<S> aggregate) => AsyncProvider.PublishToAsync(id, aggregate);
+        public static Task<A> PublishAsync<S, A>(IAggregate<S, A> aggregate) => AsyncProvider.PublishAsync(aggregate);
+        public static Task<A> PublishAsync<S, A>(object id, IAggregate<S, A> aggregate, PublishMode mode = PublishMode.Broadcast) => AsyncProvider.PublishAsync(id, aggregate, mode);
+        public static Task<A> PublishToAsync<S, A>(object id, IAggregate<S, A> aggregate) => AsyncProvider.PublishToAsync(id, aggregate);
+        public static Task<R> PublishAsync<S, A, R>(IAggregate<S, A, R> aggregate) => AsyncProvider.PublishAsync(aggregate);
+        public static Task<R> PublishAsync<S, A, R>(object id, IAggregate<S, A, R> aggregate, PublishMode mode = PublishMode.Broadcast) => AsyncProvider.PublishAsync(id, aggregate, mode);
+        public static Task<R> PublishToAsync<S, A, R>(object id, IAggregate<S, A, R> aggregate) => AsyncProvider.PublishToAsync(id, aggregate);
 
         #endregion
 

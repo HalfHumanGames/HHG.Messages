@@ -71,19 +71,49 @@ namespace HHG.Messages
 
             #region Aggregate
 
-            public Task<R> PublishAsync<R>(IAggregate<R> request)
+            public Task<R> PublishAsync<R>(IAggregate<R> aggregate)
             {
-                return Task.FromResult(message.Publish(request));
+                return Task.FromResult(message.Publish(aggregate));
             }
 
-            public Task<R> PublishAsync<R>(object id, IAggregate<R> request, PublishMode mode = PublishMode.Broadcast)
+            public Task<R> PublishAsync<R>(object id, IAggregate<R> aggregate, PublishMode mode = PublishMode.Broadcast)
             {
-                return Task.FromResult(message.Publish(id, request, mode));
+                return Task.FromResult(message.Publish(id, aggregate, mode));
             }
 
-            public Task<R> PublishToAsync<R>(object id, IAggregate<R> request)
+            public Task<R> PublishToAsync<R>(object id, IAggregate<R> aggregate)
             {
-                return Task.FromResult(message.PublishTo(id, request));
+                return Task.FromResult(message.PublishTo(id, aggregate));
+            }
+
+            public Task<A> PublishAsync<S, A>(IAggregate<S, A> aggregate)
+            {
+                return Task.FromResult(message.Publish(aggregate));
+            }
+
+            public Task<A> PublishAsync<S, A>(object id, IAggregate<S, A> aggregate, PublishMode mode = PublishMode.Broadcast)
+            {
+                return Task.FromResult(message.Publish(id, aggregate));
+            }
+
+            public Task<A> PublishToAsync<S, A>(object id, IAggregate<S, A> aggregate)
+            {
+                return Task.FromResult(message.PublishTo(id, aggregate));
+            }
+
+            public Task<R> PublishAsync<S, A, R>(IAggregate<S, A, R> aggregate)
+            {
+                return Task.FromResult(message.Publish(aggregate));
+            }
+
+            public Task<R> PublishAsync<S, A, R>(object id, IAggregate<S, A, R> aggregate, PublishMode mode = PublishMode.Broadcast)
+            {
+                return Task.FromResult(message.Publish(id, aggregate));
+            }
+
+            public Task<R> PublishToAsync<S, A, R>(object id, IAggregate<S, A, R> aggregate)
+            {
+                return Task.FromResult(message.PublishTo(id, aggregate));
             }
 
             #endregion

@@ -24,17 +24,23 @@ namespace HHG.Messages
 
         #region Request
 
-        public static R Publish<R>(IRequest<R> message) => Provider.Publish(message);
-        public static R Publish<R>(object id, IRequest<R> message, PublishMode mode = PublishMode.Broadcast) => Provider.Publish(id, message, mode);
-        public static R PublishTo<R>(object id, IRequest<R> message) => Provider.PublishTo(id, message);
+        public static R Publish<R>(IRequest<R> request) => Provider.Publish(request);
+        public static R Publish<R>(object id, IRequest<R> request, PublishMode mode = PublishMode.Broadcast) => Provider.Publish(id, request, mode);
+        public static R PublishTo<R>(object id, IRequest<R> request) => Provider.PublishTo(id, request);
 
         #endregion
 
         #region Aggregate
 
-        public static R Publish<R>(IAggregate<R> message) => Provider.Publish(message);
-        public static R Publish<R>(object id, IAggregate<R> message, PublishMode mode = PublishMode.Broadcast) => Provider.Publish(id, message, mode);
-        public static R PublishTo<R>(object id, IAggregate<R> message) => Provider.PublishTo(id, message);
+        public static R Publish<R>(IAggregate<R> aggregate) => Provider.Publish(aggregate);
+        public static R Publish<R>(object id, IAggregate<R> aggregate, PublishMode mode = PublishMode.Broadcast) => Provider.Publish(id, aggregate, mode);
+        public static R PublishTo<R>(object id, IAggregate<R> aggregate) => Provider.PublishTo(id, aggregate);
+        public static A Publish<S, A>(IAggregate<S, A> aggregate) => Provider.Publish(aggregate);
+        public static A Publish<S, A>(object id, IAggregate<S, A> aggregate, PublishMode mode = PublishMode.Broadcast) => Provider.Publish(id, aggregate, mode);
+        public static A PublishTo<S, A>(object id, IAggregate<S, A> aggregate) => Provider.PublishTo(id, aggregate);
+        public static R Publish<S, A, R>(IAggregate<S, A, R> aggregate) => Provider.Publish(aggregate);
+        public static R Publish<S, A, R>(object id, IAggregate<S, A, R> aggregate, PublishMode mode = PublishMode.Broadcast) => Provider.Publish(id, aggregate, mode);
+        public static R PublishTo<S, A, R>(object id, IAggregate<S, A, R> aggregate) => Provider.PublishTo(id, aggregate);
 
         #endregion
 

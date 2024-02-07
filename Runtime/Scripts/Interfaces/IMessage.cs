@@ -22,17 +22,23 @@ namespace HHG.Messages
 
         #region Request
 
-        R Publish<R>(IRequest<R> message);
-        R Publish<R>(object id, IRequest<R> message, PublishMode mode = PublishMode.Broadcast);
-        R PublishTo<R>(object id, IRequest<R> message);
+        R Publish<R>(IRequest<R> request);
+        R Publish<R>(object id, IRequest<R> request, PublishMode mode = PublishMode.Broadcast);
+        R PublishTo<R>(object id, IRequest<R> request);
 
         #endregion
 
         #region Aggregate
 
-        R Publish<R>(IAggregate<R> message);
-        R Publish<R>(object id, IAggregate<R> message, PublishMode mode = PublishMode.Broadcast);
-        R PublishTo<R>(object id, IAggregate<R> message);
+        R Publish<R>(IAggregate<R> aggregate);
+        R Publish<R>(object id, IAggregate<R> aggregate, PublishMode mode = PublishMode.Broadcast);
+        R PublishTo<R>(object id, IAggregate<R> aggregate);
+        A Publish<S, A>(IAggregate<S, A> aggregate);
+        A Publish<S, A>(object id, IAggregate<S, A> aggregate, PublishMode mode = PublishMode.Broadcast);
+        A PublishTo<S, A>(object id, IAggregate<S, A> aggregate);
+        R Publish<S, A, R>(IAggregate<S, A, R> aggregate);
+        R Publish<S, A, R>(object id, IAggregate<S, A, R> aggregate, PublishMode mode = PublishMode.Broadcast);
+        R PublishTo<S, A, R>(object id, IAggregate<S, A, R> aggregate);
 
         #endregion
 

@@ -133,22 +133,58 @@ namespace HHG.Messages
 
             #region Aggregate
 
-            public R Publish<R>(IAggregate<R> aggregate)
+            public S Publish<S>(IAggregate<S> aggregate)
             {
-                R[] results = Publish<R>((object)aggregate);
+                S[] results = Publish<S>((object)aggregate);
                 return results.Aggregate(aggregate.Aggregate);
             }
 
-            public R Publish<R>(object id, IAggregate<R> aggregate, PublishMode mode = PublishMode.Broadcast)
+            public S Publish<S>(object id, IAggregate<S> aggregate, PublishMode mode = PublishMode.Broadcast)
             {
-                R[] results = Publish<R>(id, (object)aggregate, mode);
+                S[] results = Publish<S>(id, (object)aggregate, mode);
                 return results.Aggregate(aggregate.Aggregate);
             }
 
-            public R PublishTo<R>(object id, IAggregate<R> aggregate)
+            public S PublishTo<S>(object id, IAggregate<S> aggregate)
             {
-                R[] results = PublishTo<R>(id, (object)aggregate);
+                S[] results = PublishTo<S>(id, (object)aggregate);
                 return results.Aggregate(aggregate.Aggregate);
+            }
+
+            public A Publish<S, A>(IAggregate<S, A> aggregate)
+            {
+                S[] results = Publish<S>(aggregate);
+                return results.Aggregate(aggregate.GetSeed(), aggregate.Aggregate);
+            }
+
+            public A Publish<S, A>(object id, IAggregate<S, A> aggregate, PublishMode mode = PublishMode.Broadcast)
+            {
+                S[] results = Publish<S>(id, aggregate, mode);
+                return results.Aggregate(aggregate.GetSeed(), aggregate.Aggregate);
+            }
+
+            public A PublishTo<S, A>(object id, IAggregate<S, A> aggregate)
+            {
+                S[] results = PublishTo<S>(id, aggregate);
+                return results.Aggregate(aggregate.GetSeed(), aggregate.Aggregate);
+            }
+
+            public R Publish<S, A, R>(IAggregate<S, A, R> aggregate)
+            {
+                S[] results = Publish<S>(aggregate);
+                return results.Aggregate(aggregate.GetSeed(), aggregate.Aggregate, aggregate.GetResult);
+            }
+
+            public R Publish<S, A, R>(object id, IAggregate<S, A, R> aggregate, PublishMode mode = PublishMode.Broadcast)
+            {
+                S[] results = Publish<S>(id, aggregate, mode);
+                return results.Aggregate(aggregate.GetSeed(), aggregate.Aggregate, aggregate.GetResult);
+            }
+
+            public R PublishTo<S, A, R>(object id, IAggregate<S, A, R> aggregate)
+            {
+                S[] results = PublishTo<S>(id, aggregate);
+                return results.Aggregate(aggregate.GetSeed(), aggregate.Aggregate, aggregate.GetResult);
             }
 
             #endregion

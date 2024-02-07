@@ -1,7 +1,19 @@
 namespace HHG.Messages
 {
-    public interface IAggregate<R>
+    public interface IAggregate<TSource>
     {
-        R Aggregate(R a, R b);
+        TSource Aggregate(TSource a, TSource b);
+    }
+
+    public interface IAggregate<TSource, TAccumulate>
+    {
+        TAccumulate GetSeed() => default;
+
+        TAccumulate Aggregate(TAccumulate a, TSource b);
+    }
+
+    public interface IAggregate<TSource, TAccumulate, TResult> : IAggregate<TSource, TAccumulate>
+    {
+        TResult GetResult(TAccumulate a);
     }
 }

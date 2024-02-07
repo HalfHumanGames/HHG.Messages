@@ -23,17 +23,23 @@ namespace HHG.Messages
 
         #region Request
 
-        Task<R> PublishAsync<R>(IRequest<R> message);
-        Task<R> PublishAsync<R>(object id, IRequest<R> message, PublishMode mode = PublishMode.Broadcast);
-        Task<R> PublishToAsync<R>(object id, IRequest<R> message);
+        Task<R> PublishAsync<R>(IRequest<R> request);
+        Task<R> PublishAsync<R>(object id, IRequest<R> request, PublishMode mode = PublishMode.Broadcast);
+        Task<R> PublishToAsync<R>(object id, IRequest<R> request);
 
         #endregion
 
         #region Aggregate
 
-        Task<R> PublishAsync<R>(IAggregate<R> message);
-        Task<R> PublishAsync<R>(object id, IAggregate<R> message, PublishMode mode = PublishMode.Broadcast);
-        Task<R> PublishToAsync<R>(object id, IAggregate<R> message);
+        Task<S> PublishAsync<S>(IAggregate<S> aggregate);
+        Task<S> PublishAsync<S>(object id, IAggregate<S> aggregate, PublishMode mode = PublishMode.Broadcast);
+        Task<S> PublishToAsync<S>(object id, IAggregate<S> aggregate);
+        Task<A> PublishAsync<S, A>(IAggregate<S, A> aggregate);
+        Task<A> PublishAsync<S, A>(object id, IAggregate<S, A> aggregate, PublishMode mode = PublishMode.Broadcast);
+        Task<A> PublishToAsync<S, A>(object id, IAggregate<S, A> aggregate);
+        Task<R> PublishAsync<S, A, R>(IAggregate<S, A, R> aggregate);
+        Task<R> PublishAsync<S, A, R>(object id, IAggregate<S, A, R> aggregate, PublishMode mode = PublishMode.Broadcast);
+        Task<R> PublishToAsync<S, A, R>(object id, IAggregate<S, A, R> aggregate);
 
         #endregion
 
