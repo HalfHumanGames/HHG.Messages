@@ -42,6 +42,21 @@ namespace HHG.Messages
 
         #endregion
 
+        #region Select
+
+        R Publish<S, R>(Func<S, R> selector);
+        R Publish<S, R>(object id, Func<S, R> selector, PublishMode mode = PublishMode.Broadcast);
+        R PublishTo<S, R>(object id, Func<S, R> selector);
+
+        #endregion
+
+        #region Subscribe (Select)
+
+        void Subscribe<T>(T source, int order = 0);
+        void Subscribe<T>(object id, T source, int order = 0);
+
+        #endregion
+
         #region Subscribe (Publish)
 
         void Subscribe<T>(Action<T> callback, int order = 0);

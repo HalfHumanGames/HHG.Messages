@@ -5,7 +5,7 @@ namespace HHG.Messages
 {
     public partial class Message
     {
-        public static IMessageAsync AsyncProvider { get; set; } = new DefaultAsync();
+        public static IMessageAsync AsyncProvider { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         #region Publish
 
@@ -42,6 +42,21 @@ namespace HHG.Messages
         public static Task<R> PublishAsync<S, A, R>(IAggregate<S, A, R> aggregate) => AsyncProvider.PublishAsync(aggregate);
         public static Task<R> PublishAsync<S, A, R>(object id, IAggregate<S, A, R> aggregate, PublishMode mode = PublishMode.Broadcast) => AsyncProvider.PublishAsync(id, aggregate, mode);
         public static Task<R> PublishToAsync<S, A, R>(object id, IAggregate<S, A, R> aggregate) => AsyncProvider.PublishToAsync(id, aggregate);
+
+        #endregion
+
+        #region Select
+
+        public static Task<R> PublishAsync<S, R>(Func<S, R> selector) => AsyncProvider.PublishAsync(selector);
+        public static Task<R> PublishAsync<S, R>(object id, Func<S, R> selector, PublishMode mode = PublishMode.Broadcast) => AsyncProvider.PublishAsync(id, selector, mode);
+        public static Task<R> PublishToAsync<S, R>(object id, Func<S, R> selector) => AsyncProvider.PublishAsync(id, selector);
+
+        #endregion
+
+        #region Subscribe (Select)
+
+        public static Task SubscribeAsync<T>(T source, int order = 0) => AsyncProvider.SubscribeAsync(source, order);
+        public static Task SubscribeAsync<T>(object id, T source, int order = 0) => AsyncProvider.SubscribeAsync(id, source, order);
 
         #endregion
 

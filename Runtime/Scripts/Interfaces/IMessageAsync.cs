@@ -43,6 +43,21 @@ namespace HHG.Messages
 
         #endregion
 
+        #region Select
+
+        Task<R> PublishAsync<S, R>(Func<S, R> selector);
+        Task<R> PublishAsync<S, R>(object id, Func<S, R> selector, PublishMode mode = PublishMode.Broadcast);
+        Task<R> PublishToAsync<S, R>(object id, Func<S, R> selector);
+
+        #endregion
+
+        #region Subscribe (Select)
+
+        Task SubscribeAsync<T>(T source, int order = 0);
+        Task SubscribeAsync<T>(object id, T source, int order = 0);
+
+        #endregion
+
         #region Subscribe (Publish)
 
         Task SubscribeAsync<T>(Action<T> callback, int order = 0);

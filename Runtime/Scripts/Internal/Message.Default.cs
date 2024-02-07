@@ -11,6 +11,7 @@ namespace HHG.Messages
         {
             private static readonly Dictionary<SubjectId, List<Subscription>> actionSubscriptions = new Dictionary<SubjectId, List<Subscription>>();
             private static readonly Dictionary<SubjectId, List<Subscription>> funcSubscriptions = new Dictionary<SubjectId, List<Subscription>>();
+            private Dictionary<SubjectId, object> sources = new Dictionary<SubjectId, object>();
 
             #region Publish
 
@@ -185,6 +186,48 @@ namespace HHG.Messages
             {
                 S[] results = PublishTo<S>(id, aggregate);
                 return results.Aggregate(aggregate.GetSeed(), aggregate.Aggregate, aggregate.GetResult);
+            }
+
+            #endregion
+
+            #region Selectors
+
+            public R Publish<S, R>(Func<S, R> selector)
+            {
+               return Publish(null, selector);
+            }
+
+            public R Publish<S, R>(object id, Func<S, R> selector, PublishMode mode = PublishMode.Broadcast)
+            {
+                SubjectId subjectId = new SubjectId(typeof(S), id);
+                if (sources.ContainsKey(subjectId))
+                {
+                    S source = Publish<S>(sources[subjectId]).FirstOrDefault();
+                    return source == null ? default : selector(source);
+                }
+                return default;
+            }
+
+            public R PublishTo<S, R>(object id, Func<S, R> selector)
+            {
+                return Publish(id, selector, PublishMode.Narrowcast);
+            }
+
+            #endregion
+
+            #region Subscribe (Selectors)
+
+            public void Subscribe<S>(S source, int order = 0)
+            {
+                Subscribe(null, source, order);
+            }
+
+            public void Subscribe<S>(object id, S source, int order = 0)
+            {
+                SubjectId subjectId = new SubjectId(typeof(S), id);
+                sources[subjectId] = source;
+                Func<S, S> func = _ => source;
+                Subscribe(id, func, order);
             }
 
             #endregion
