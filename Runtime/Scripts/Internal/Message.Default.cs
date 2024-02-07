@@ -156,17 +156,17 @@ namespace HHG.Messages
             #region Subscribe (Publishes)
 
 
-            public void Subscribe<T>(Action<T> callback)
+            public void Subscribe<T>(Action<T> callback, int order = 0)
             {
-                SubscribeInternal<T>(null, callback);
+                SubscribeInternal<T>(null, callback, order);
             }
 
-            public void Subscribe<T>(object id, Action<T> callback)
+            public void Subscribe<T>(object id, Action<T> callback, int order = 0)
             {
-                SubscribeInternal<T>(id, callback);
+                SubscribeInternal<T>(id, callback, order);
             }
 
-            protected void SubscribeInternal<T>(object id, Delegate callback)
+            protected void SubscribeInternal<T>(object id, Delegate callback, int order = 0)
             {
                 Action<object> wrappedCallback = default;
                 if (callback is Action action)
@@ -179,7 +179,7 @@ namespace HHG.Messages
                 }
                 SubjectId subjectId = new SubjectId(typeof(T), id);
                 SubscriptionId subscriptionId = new SubscriptionId(subjectId, callback);
-                Subscription subscription = new Subscription(subscriptionId, wrappedCallback);
+                Subscription subscription = new Subscription(subscriptionId, wrappedCallback, order);
 
                 if (!actionSubscriptions.ContainsKey(subjectId))
                 {
@@ -189,6 +189,7 @@ namespace HHG.Messages
                 if (!actionSubscriptions[subjectId].Contains(subscription))
                 {
                     actionSubscriptions[subjectId].Add(subscription);
+                    actionSubscriptions[subjectId].Sort();
                 }
             }
 
@@ -226,17 +227,17 @@ namespace HHG.Messages
 
             #region Subscribe (Publishs)
 
-            public void Subscribe<T, R>(Func<T, R> callback)
+            public void Subscribe<T, R>(Func<T, R> callback, int order = 0)
             {
-                Subscribe(null, callback);
+                Subscribe(null, callback, order);
             }
 
-            public void Subscribe<T, R>(object id, Func<T, R> callback)
+            public void Subscribe<T, R>(object id, Func<T, R> callback, int order = 0)
             {
                 Func<object, object> wrappedCallback = args => callback((T)args);
                 SubjectId subjectId = new SubjectId(typeof(T), id);
                 SubscriptionId subscriptionId = new SubscriptionId(subjectId, callback);
-                Subscription subscription = new Subscription(subscriptionId, wrappedCallback);
+                Subscription subscription = new Subscription(subscriptionId, wrappedCallback, order);
 
                 if (!funcSubscriptions.ContainsKey(subjectId))
                 {
@@ -246,6 +247,7 @@ namespace HHG.Messages
                 if (!funcSubscriptions[subjectId].Contains(subscription))
                 {
                     funcSubscriptions[subjectId].Add(subscription);
+                    funcSubscriptions[subjectId].Sort();
                 }
             }
 

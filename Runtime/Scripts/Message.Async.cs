@@ -41,8 +41,8 @@ namespace HHG.Messages
 
         #region Subscribe (Action)
 
-        public static Task SubscribeAsync<T>(Action<T> callback) => AsyncProvider.SubscribeAsync(callback);
-        public static Task SubscribeAsync<T>(object id, Action<T> callback) => AsyncProvider.SubscribeAsync(id, callback);
+        public static Task SubscribeAsync<T>(Action<T> callback, int order = 0) => AsyncProvider.SubscribeAsync(callback, order);
+        public static Task SubscribeAsync<T>(object id, Action<T> callback, int order = 0) => AsyncProvider.SubscribeAsync(id, callback, order);
         public static Task UnsubscribeAsync<T>(Action<T> callback) => AsyncProvider.UnsubscribeAsync(callback);
         public static Task UnsubscribeAsync<T>(object id, Action<T> callback) => AsyncProvider.UnsubscribeAsync(id, callback);
 
@@ -50,8 +50,8 @@ namespace HHG.Messages
 
         #region Subscribe (Func)
 
-        public static Task SubscribeAsync<T, R>(Func<T, R> callback) => AsyncProvider.SubscribeAsync(callback);
-        public static Task SubscribeAsync<T, R>(object id, Func<T, R> callback) => AsyncProvider.SubscribeAsync(id, callback);
+        public static Task SubscribeAsync<T, R>(Func<T, R> callback, int order = 0) => AsyncProvider.SubscribeAsync(callback, order);
+        public static Task SubscribeAsync<T, R>(object id, Func<T, R> callback, int order = 0) => AsyncProvider.SubscribeAsync(id, callback, order);
         public static Task UnsubscribeAsync<T, R>(Func<T, R> callback) => AsyncProvider.UnsubscribeAsync(callback);
         public static Task UnsubscribeAsync<T, R>(object id, Func<T, R> callback) => AsyncProvider.UnsubscribeAsync(id, callback);
 

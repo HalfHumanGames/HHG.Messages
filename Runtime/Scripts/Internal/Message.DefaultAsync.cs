@@ -90,15 +90,15 @@ namespace HHG.Messages
 
             #region Subscribe (Publishes)
 
-            public Task SubscribeAsync<T>(Action<T> callback)
+            public Task SubscribeAsync<T>(Action<T> callback, int order = 0)
             {
-                message.Subscribe(callback);
+                message.Subscribe(callback, order);
                 return Task.CompletedTask;
             }
 
-            public Task SubscribeAsync<T>(object id, Action<T> callback)
+            public Task SubscribeAsync<T>(object id, Action<T> callback, int order = 0)
             {
-                message.Subscribe(id, callback);
+                message.Subscribe(id, callback, order);
                 return Task.CompletedTask;
             }
 
@@ -118,15 +118,15 @@ namespace HHG.Messages
 
             #region Subscribe (Publishs)
 
-            public Task SubscribeAsync<T, R>(Func<T, R> callback)
+            public Task SubscribeAsync<T, R>(Func<T, R> callback, int order = 0)
             {
-                message.Subscribe(callback);
+                message.Subscribe(callback, order);
                 return Task.CompletedTask;
             }
 
-            public Task SubscribeAsync<T, R>(object id, Func<T, R> callback)
+            public Task SubscribeAsync<T, R>(object id, Func<T, R> callback, int order = 0)
             {
-                message.Subscribe(id, callback);
+                message.Subscribe(id, callback, order);
                 return Task.CompletedTask;
             }
 

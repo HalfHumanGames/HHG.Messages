@@ -40,8 +40,8 @@ namespace HHG.Messages
 
         #region Subscribe (Action)
 
-        public static void Subscribe<T>(Action<T> callback) => Provider.Subscribe(callback);
-        public static void Subscribe<T>(object id, Action<T> callback) => Provider.Subscribe(id, callback);
+        public static void Subscribe<T>(Action<T> callback, int order = 0) => Provider.Subscribe(callback, order);
+        public static void Subscribe<T>(object id, Action<T> callback, int order = 0) => Provider.Subscribe(id, callback, order);
         public static void Unsubscribe<T>(Action<T> callback) => Provider.Unsubscribe(callback);
         public static void Unsubscribe<T>(object id, Action<T> callback) => Provider.Unsubscribe(id, callback);
 
@@ -49,8 +49,8 @@ namespace HHG.Messages
 
         #region Subscribe (Func)
 
-        public static void Subscribe<T, R>(Func<T, R> callback) => Provider.Subscribe(callback);
-        public static void Subscribe<T, R>(object id, Func<T, R> callback) => Provider.Subscribe(id, callback);
+        public static void Subscribe<T, R>(Func<T, R> callback, int order = 0) => Provider.Subscribe(callback, order);
+        public static void Subscribe<T, R>(object id, Func<T, R> callback, int order = 0) => Provider.Subscribe(id, callback, order);
         public static void Unsubscribe<T, R>(Func<T, R> callback) => Provider.Unsubscribe(callback);
         public static void Unsubscribe<T, R>(object id, Func<T, R> callback) => Provider.Unsubscribe(id, callback);
 

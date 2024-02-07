@@ -2,15 +2,17 @@
 
 namespace HHG.Messages
 {
-    internal class Subscription
+    internal class Subscription : IComparable<Subscription>
     {
         public SubscriptionId SubscriptionId { get; private set; }
         private Delegate callback;
+        private int sortOrder;
 
-        public Subscription(SubscriptionId subscriptionId, Delegate wrappedCallback)
+        public Subscription(SubscriptionId subscriptionId, Delegate wrappedCallback, int order)
         {
             SubscriptionId = subscriptionId;
             callback = wrappedCallback;
+            sortOrder = order;
         }
 
         public void InvokeAction(object message)
@@ -36,6 +38,11 @@ namespace HHG.Messages
                 return funcWithParam(message);
             }
             return default;
+        }
+
+        public int CompareTo(Subscription other)
+        {
+            return sortOrder.CompareTo(other.sortOrder);
         }
     }
 }
