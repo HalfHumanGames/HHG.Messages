@@ -32,12 +32,17 @@ namespace HHG.Messages
                     return;
                 }
 
+                if (message is ICancellable cancellable)
+                {
+                    cancellable.Reset();
+                }
+
                 for (int i = 0; i < actionSubscriptions[subjectId].Count; i++)
                 {
                     Subscription subscription = actionSubscriptions[subjectId][i];
                     subscription.InvokeAction(message);
 
-                    if (message is ICancellable cancellable && cancellable.IsCancelled)
+                    if (message is ICancellable cancellable2 && cancellable2.IsCancelled)
                     {
                         return;
                     }
@@ -76,6 +81,11 @@ namespace HHG.Messages
                     return new R[0];
                 }
 
+                if (message is ICancellable cancellable)
+                {
+                    cancellable.Reset();
+                }
+
                 int global = 0;
                 int size = funcSubscriptions[subjectId].Count;
                 if (subjectId.Id != null && mode == PublishMode.Broadcast)
@@ -93,7 +103,7 @@ namespace HHG.Messages
                     Subscription subscription = funcSubscriptions[subjectId][i1];
                     retval[i++] = (R)subscription.InvokeFunc(message);
 
-                    if (message is ICancellable cancellable && cancellable.IsCancelled)
+                    if (message is ICancellable cancellable2 && cancellable2.IsCancelled)
                     {
                         Array.Resize(ref retval, i);
                         return retval;
