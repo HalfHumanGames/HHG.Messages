@@ -1,10 +1,24 @@
+using System;
+
 namespace HHG.Messages
 {
     public interface ICancellable
     {
-        bool IsCancelled { get; set; }
-        void Cancel() => IsCancelled = true;
-        void Reset() => IsCancelled = false;
+        CancellationToken CancellationToken { get; }
+
+        void Cancel() => CancellationToken.Cancel();
+
+        event Action Completed
+        {
+            add => CancellationToken.Completed += value;
+            remove => CancellationToken.Completed -= value;
+        }
+
+        event Action Cancelled
+        {
+            add => CancellationToken.Cancelled += value;
+            remove => CancellationToken.Cancelled -= value;
+        }
     }
 
     // Extension method required since Unity does not
@@ -12,5 +26,7 @@ namespace HHG.Messages
     public static class CancellableExtensions
     {
         public static void Cancel(this ICancellable cancellable) => cancellable.Cancel();
+        public static void OnCancelled(this ICancellable cancellable, Action action) => cancellable.Completed += action;
+        public static void OnCompleted(this ICancellable cancellable, Action action) => cancellable.Completed += action;
     }
 }
