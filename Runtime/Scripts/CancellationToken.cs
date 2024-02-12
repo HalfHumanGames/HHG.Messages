@@ -2,7 +2,7 @@ using System;
 
 namespace HHG.Messages
 {
-    public struct CancellationToken
+    public class CancellationToken
     {
         internal bool IsCancelled { get; private set; }
 
