@@ -20,6 +20,11 @@ namespace HHG.Messages
         internal void Complete()
         {
             Completed?.Invoke();
+            Reset();
+        }
+
+        internal void Reset()
+        {
             IsCancelled = false;
             Completed = null;
             Cancelled = null;

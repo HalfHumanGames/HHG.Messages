@@ -37,8 +37,9 @@ namespace HHG.Messages
                     Subscription subscription = actionSubscriptions[subjectId][i];
                     subscription.InvokeAction(message);
 
-                    if (message is ICancellable cancellable2 && cancellable2.CancellationToken.IsCancelled)
+                    if (message is ICancellable cancellable && cancellable.CancellationToken.IsCancelled)
                     {
+                        cancellable.CancellationToken.Reset();
                         return;
                     }
                 }
@@ -48,9 +49,9 @@ namespace HHG.Messages
                     Publish(null, message);
                 }
 
-                if (message is ICancellable cancellable3)
+                if (message is ICancellable cancellable2)
                 {
-                    cancellable3.CancellationToken.Complete();
+                    cancellable2.CancellationToken.Complete();
                 }
             }
 
@@ -98,8 +99,9 @@ namespace HHG.Messages
                     Subscription subscription = funcSubscriptions[subjectId][i1];
                     retval[i++] = (R)subscription.InvokeFunc(message);
 
-                    if (message is ICancellable cancellable2 && cancellable2.CancellationToken.IsCancelled)
+                    if (message is ICancellable cancellable && cancellable.CancellationToken.IsCancelled)
                     {
+                        cancellable.CancellationToken.Reset();
                         Array.Resize(ref retval, i);
                         return retval;
                     }
@@ -110,9 +112,9 @@ namespace HHG.Messages
                     Array.Copy(Publish<R>(null, message), 0, retval, i, global);
                 }
 
-                if (message is ICancellable cancellable3)
+                if (message is ICancellable cancellable2)
                 {
-                    cancellable3.CancellationToken.Complete();
+                    cancellable2.CancellationToken.Complete();
                 }
 
                 return retval;
