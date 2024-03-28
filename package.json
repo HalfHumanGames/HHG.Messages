@@ -24,6 +24,6 @@
     "url": "https://github.com/HalfHumanGames"
   },
   "dependencies": {
-    "com.halfhumangames.common": "1.0.0"
+    "com.halfhumangames.common": "https://github.com/HalfHumanGames/HHG.Common.git"
   }
 }
