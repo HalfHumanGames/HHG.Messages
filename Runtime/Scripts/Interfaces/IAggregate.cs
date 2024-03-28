@@ -1,4 +1,4 @@
-namespace HHG.Messages
+namespace HHG.Messages.Runtime
 {
     public interface IAggregate<TSource>
     {

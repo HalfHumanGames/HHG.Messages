@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace HHG.Messages
+namespace HHG.Messages.Runtime
 {
     public interface IMessageAsync
     {

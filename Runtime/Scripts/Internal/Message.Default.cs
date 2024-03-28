@@ -1,9 +1,9 @@
-﻿using HHG.Common;
+﻿using HHG.Common.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace HHG.Messages
+namespace HHG.Messages.Runtime
 {
     public partial class Message
     {

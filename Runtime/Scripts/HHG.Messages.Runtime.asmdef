@@ -1,13 +1,13 @@
 {
-    "name": "HHG.Messages",
-    "rootNamespace": "HHG.Messages",
+    "name": "HHG.Messages.Runtime",
+    "rootNamespace": "HHG.Messages.Runtime",
     "references": [
         "GUID:8413476b1284ef74fa7300662f10cca9"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
-    "overrideReferences": false,
+    "overrideReferences": true,
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],

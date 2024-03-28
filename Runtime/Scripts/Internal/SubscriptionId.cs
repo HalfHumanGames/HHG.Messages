@@ -1,7 +1,7 @@
-﻿using HHG.Common;
+﻿using HHG.Common.Runtime;
 using System;
 
-namespace HHG.Messages
+namespace HHG.Messages.Runtime
 {
     internal struct SubscriptionId : IEquatable<SubscriptionId>
     {

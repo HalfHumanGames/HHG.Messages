@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HHG.Messages
+namespace HHG.Messages.Runtime
 {
     internal class Subscription : IComparable<Subscription>
     {
