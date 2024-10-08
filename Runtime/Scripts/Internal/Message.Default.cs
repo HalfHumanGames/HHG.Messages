@@ -32,7 +32,7 @@ namespace HHG.Messages.Runtime
                     return;
                 }
 
-                for (int i = 0; i < subscriptions.Count; i++)
+                for (int i = subscriptions.Count - 1; i >= 0; i--)
                 {
                     Subscription subscription = subscriptions[i];
                     subscription.InvokeAction(message);
@@ -94,7 +94,7 @@ namespace HHG.Messages.Runtime
                 R[] retval = new R[size];
 
                 int index = 0;
-                for (int i = 0; i < subscriptions.Count; i++)
+                for (int i = subscriptions.Count - 1; i >= 0; i--)
                 {
                     Subscription subscription = subscriptions[i];
                     retval[index++] = (R)subscription.InvokeFunc(message);
@@ -244,6 +244,7 @@ namespace HHG.Messages.Runtime
                 {
                     subscriptions.Add(subscription);
                     subscriptions.Sort();
+                    subscriptions.Reverse(); // Since iterate backwards
                 }
             }
 
@@ -272,7 +273,7 @@ namespace HHG.Messages.Runtime
                     return;
                 }
 
-                for (int i = 0; i < subscriptions.Count; i++)
+                for (int i = subscriptions.Count - 1; i >= 0; i--)
                 {
                     if (subscriptions[i].SubscriptionId == subscriptionId)
                     {
@@ -307,6 +308,7 @@ namespace HHG.Messages.Runtime
                 {
                     subscriptions.Add(subscription);
                     subscriptions.Sort();
+                    subscriptions.Reverse(); // Since iterate backwards
                 }
             }
 
@@ -331,7 +333,7 @@ namespace HHG.Messages.Runtime
                     return;
                 }
 
-                for (int i = 0; i < subscriptions.Count; i++)
+                for (int i = subscriptions.Count - 1; i >= 0; i--)
                 {
                     if (subscriptions[i].SubscriptionId == subscriptionId)
                     {
