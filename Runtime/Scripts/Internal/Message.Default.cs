@@ -237,7 +237,8 @@ namespace HHG.Messages.Runtime
 
                 if (!actionSubscriptions.TryGetValue(subjectId, out List<Subscription> subscriptions))
                 {
-                    actionSubscriptions.Add(subjectId, new List<Subscription>());
+                    subscriptions = new List<Subscription>();
+                    actionSubscriptions.Add(subjectId, subscriptions);
                 }
 
                 if (!subscriptions.Contains(subscription))
@@ -301,7 +302,8 @@ namespace HHG.Messages.Runtime
 
                 if (!funcSubscriptions.TryGetValue(subjectId, out List<Subscription> subscriptions))
                 {
-                    funcSubscriptions.Add(subjectId, new List<Subscription>());
+                    subscriptions = new List<Subscription>();
+                    funcSubscriptions.Add(subjectId, subscriptions);
                 }
 
                 if (!subscriptions.Contains(subscription))
