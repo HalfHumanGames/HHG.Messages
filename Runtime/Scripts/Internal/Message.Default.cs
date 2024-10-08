@@ -27,14 +27,14 @@ namespace HHG.Messages.Runtime
 
             private void PublishInternal(SubjectId subjectId, object message, PublishMode mode = PublishMode.Broadcast)
             {
-                if (!actionSubscriptions.ContainsKey(subjectId))
+                if (!actionSubscriptions.TryGetValue(subjectId, out List<Subscription> subscriptions))
                 {
                     return;
                 }
 
-                for (int i = 0; i < actionSubscriptions[subjectId].Count; i++)
+                for (int i = 0; i < subscriptions.Count; i++)
                 {
-                    Subscription subscription = actionSubscriptions[subjectId][i];
+                    Subscription subscription = subscriptions[i];
                     subscription.InvokeAction(message);
 
                     if (message is ICancellable cancellable && cancellable.CancellationToken.IsCancelled)
@@ -77,13 +77,13 @@ namespace HHG.Messages.Runtime
 
             private R[] PublishInternal<R>(SubjectId subjectId, object message, PublishMode mode = PublishMode.Broadcast)
             {
-                if (!funcSubscriptions.ContainsKey(subjectId))
+                if (!funcSubscriptions.TryGetValue(subjectId, out List<Subscription> subscriptions))
                 {
                     return new R[0];
                 }
 
                 int global = 0;
-                int size = funcSubscriptions[subjectId].Count;
+                int size = subscriptions.Count;
                 if (subjectId.Id != null && mode == PublishMode.Broadcast)
                 {
                     SubjectId nullSubjectId = new SubjectId(subjectId.Type, null);
@@ -93,23 +93,23 @@ namespace HHG.Messages.Runtime
 
                 R[] retval = new R[size];
 
-                int i = 0;
-                for (int i1 = 0; i1 < funcSubscriptions[subjectId].Count; i1++)
+                int index = 0;
+                for (int i = 0; i < subscriptions.Count; i++)
                 {
-                    Subscription subscription = funcSubscriptions[subjectId][i1];
-                    retval[i++] = (R)subscription.InvokeFunc(message);
+                    Subscription subscription = subscriptions[i];
+                    retval[index++] = (R)subscription.InvokeFunc(message);
 
                     if (message is ICancellable cancellable && cancellable.CancellationToken.IsCancelled)
                     {
                         cancellable.CancellationToken.Reset();
-                        Array.Resize(ref retval, i);
+                        Array.Resize(ref retval, index);
                         return retval;
                     }
                 }
 
                 if (subjectId.Id != null && global > 0)
                 {
-                    Array.Copy(Publish<R>(null, message), 0, retval, i, global);
+                    Array.Copy(Publish<R>(null, message), 0, retval, index, global);
                 }
 
                 if (message is ICancellable cancellable2)
@@ -235,15 +235,15 @@ namespace HHG.Messages.Runtime
                 SubscriptionId subscriptionId = new SubscriptionId(subjectId, callback);
                 Subscription subscription = new Subscription(subscriptionId, wrappedCallback, order);
 
-                if (!actionSubscriptions.ContainsKey(subjectId))
+                if (!actionSubscriptions.TryGetValue(subjectId, out List<Subscription> subscriptions))
                 {
                     actionSubscriptions.Add(subjectId, new List<Subscription>());
                 }
 
-                if (!actionSubscriptions[subjectId].Contains(subscription))
+                if (!subscriptions.Contains(subscription))
                 {
-                    actionSubscriptions[subjectId].Add(subscription);
-                    actionSubscriptions[subjectId].Sort();
+                    subscriptions.Add(subscription);
+                    subscriptions.Sort();
                 }
             }
 
@@ -267,16 +267,16 @@ namespace HHG.Messages.Runtime
             {
                 SubscriptionId subscriptionId = new SubscriptionId(subjectId, callback);
 
-                if (!actionSubscriptions.ContainsKey(subjectId))
+                if (!actionSubscriptions.TryGetValue(subjectId, out List<Subscription> subscriptions))
                 {
                     return;
                 }
 
-                for (int i = 0; i < actionSubscriptions[subjectId].Count; i++)
+                for (int i = 0; i < subscriptions.Count; i++)
                 {
-                    if (actionSubscriptions[subjectId][i].SubscriptionId == subscriptionId)
+                    if (subscriptions[i].SubscriptionId == subscriptionId)
                     {
-                        actionSubscriptions[subjectId].RemoveAt(i);
+                        subscriptions.RemoveAt(i);
                         break;
                     }
                 }
@@ -298,15 +298,15 @@ namespace HHG.Messages.Runtime
                 SubscriptionId subscriptionId = new SubscriptionId(subjectId, callback);
                 Subscription subscription = new Subscription(subscriptionId, wrappedCallback, order);
 
-                if (!funcSubscriptions.ContainsKey(subjectId))
+                if (!funcSubscriptions.TryGetValue(subjectId, out List<Subscription> subscriptions))
                 {
                     funcSubscriptions.Add(subjectId, new List<Subscription>());
                 }
 
-                if (!funcSubscriptions[subjectId].Contains(subscription))
+                if (!subscriptions.Contains(subscription))
                 {
-                    funcSubscriptions[subjectId].Add(subscription);
-                    funcSubscriptions[subjectId].Sort();
+                    subscriptions.Add(subscription);
+                    subscriptions.Sort();
                 }
             }
 
@@ -326,16 +326,16 @@ namespace HHG.Messages.Runtime
                 Func<object, object> wrappedCallback = args => callback((T)args);
                 SubscriptionId subscriptionId = new SubscriptionId(subjectId, callback);
 
-                if (!funcSubscriptions.ContainsKey(subjectId))
+                if (!funcSubscriptions.TryGetValue(subjectId, out List<Subscription> subscriptions))
                 {
                     return;
                 }
 
-                for (int i = 0; i < funcSubscriptions[subjectId].Count; i++)
+                for (int i = 0; i < subscriptions.Count; i++)
                 {
-                    if (funcSubscriptions[subjectId][i].SubscriptionId == subscriptionId)
+                    if (subscriptions[i].SubscriptionId == subscriptionId)
                     {
-                        funcSubscriptions[subjectId].RemoveAt(i);
+                        subscriptions.RemoveAt(i);
                         break;
                     }
                 }
