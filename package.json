@@ -1,6 +1,6 @@
 {
   "name": "com.halfhumangames.messages",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "displayName": "HHG - Messages",
   "description": "A messaging library for Unity",
   "unity": "2020.3",
@@ -24,6 +24,6 @@
     "url": "https://github.com/HalfHumanGames"
   },
   "dependencies": {
-    "com.halfhumangames.common": "https://github.com/HalfHumanGames/HHG.Common.git"
+    "com.halfhumangames.common": "1.0.1"
   }
 }
