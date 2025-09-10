@@ -3,12 +3,12 @@ using System;
 
 namespace HHG.Messages.Runtime
 {
-    internal struct SubscriptionId : IEquatable<SubscriptionId>
+    internal struct HandlerId : IEquatable<HandlerId>
     {
         public SubjectId SubjectId { get; private set; }
         public object Callback { get; private set; }
 
-        public SubscriptionId(SubjectId subjectId, object callback)
+        public HandlerId(SubjectId subjectId, object callback)
         {
             SubjectId = subjectId;
             Callback = callback;
@@ -27,25 +27,25 @@ namespace HHG.Messages.Runtime
 
         public override bool Equals(object other)
         {
-            if (other is SubscriptionId)
+            if (other is HandlerId)
             {
-                return Equals((SubscriptionId) other);
+                return Equals((HandlerId) other);
             }
             return false;
         }
 
-        public bool Equals(SubscriptionId other)
+        public bool Equals(HandlerId other)
         {
             return Equals(SubjectId, other.SubjectId)
                 && Equals(Callback, other.Callback);
         }
 
-        public static bool operator ==(SubscriptionId left, SubscriptionId right)
+        public static bool operator ==(HandlerId left, HandlerId right)
         {
             return left.Equals(right);
         }
 
-        public static bool operator !=(SubscriptionId left, SubscriptionId right)
+        public static bool operator !=(HandlerId left, HandlerId right)
         {
             return !left.Equals(right);
         }

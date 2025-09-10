@@ -9,8 +9,8 @@ namespace HHG.Messages.Runtime
     {
         internal class Default : IMessage
         {
-            private static readonly Dictionary<SubjectId, List<Subscription>> actionSubscriptions = new Dictionary<SubjectId, List<Subscription>>();
-            private static readonly Dictionary<SubjectId, List<Subscription>> funcSubscriptions = new Dictionary<SubjectId, List<Subscription>>();
+            private static readonly Dictionary<SubjectId, List<Handler>> actionHandlers = new Dictionary<SubjectId, List<Handler>>();
+            private static readonly Dictionary<SubjectId, List<Handler>> funcHandlers = new Dictionary<SubjectId, List<Handler>>();
 
             #region Publish
 
@@ -27,15 +27,15 @@ namespace HHG.Messages.Runtime
 
             private void PublishInternal(SubjectId subjectId, object message, PublishMode mode = PublishMode.Broadcast)
             {
-                if (!actionSubscriptions.TryGetValue(subjectId, out List<Subscription> subscriptions))
+                if (!actionHandlers.TryGetValue(subjectId, out List<Handler> handlers))
                 {
                     return;
                 }
 
-                for (int i = subscriptions.Count - 1; i >= 0; i--)
+                for (int i = handlers.Count - 1; i >= 0; i--)
                 {
-                    Subscription subscription = subscriptions[i];
-                    subscription.InvokeAction(message);
+                    Handler handler = handlers[i];
+                    handler.InvokeAction(message);
 
                     if (message is ICancellable cancellable && cancellable.CancellationToken.IsCancelled)
                     {
@@ -77,27 +77,27 @@ namespace HHG.Messages.Runtime
 
             private R[] PublishInternal<R>(SubjectId subjectId, object message, PublishMode mode = PublishMode.Broadcast)
             {
-                if (!funcSubscriptions.TryGetValue(subjectId, out List<Subscription> subscriptions))
+                if (!funcHandlers.TryGetValue(subjectId, out List<Handler> handlers))
                 {
                     return new R[0];
                 }
 
                 int global = 0;
-                int size = subscriptions.Count;
+                int size = handlers.Count;
                 if (subjectId.Id != null && mode == PublishMode.Broadcast)
                 {
                     SubjectId nullSubjectId = new SubjectId(subjectId.Type, null);
-                    global = funcSubscriptions[nullSubjectId].Count;
+                    global = funcHandlers[nullSubjectId].Count;
                     size += global;
                 }
 
                 R[] retval = new R[size];
 
                 int index = 0;
-                for (int i = subscriptions.Count - 1; i >= 0; i--)
+                for (int i = handlers.Count - 1; i >= 0; i--)
                 {
-                    Subscription subscription = subscriptions[i];
-                    retval[index++] = (R)subscription.InvokeFunc(message);
+                    Handler handler = handlers[i];
+                    retval[index++] = (R)handler.InvokeFunc(message);
 
                     if (message is ICancellable cancellable && cancellable.CancellationToken.IsCancelled)
                     {
@@ -232,20 +232,20 @@ namespace HHG.Messages.Runtime
                     wrappedCallback = arg => actionWithParam((T)arg);
                 }
                 SubjectId subjectId = new SubjectId(typeof(T), id);
-                SubscriptionId subscriptionId = new SubscriptionId(subjectId, callback);
-                Subscription subscription = new Subscription(subscriptionId, wrappedCallback, order);
+                HandlerId handlerId = new HandlerId(subjectId, callback);
+                Handler handler = new Handler(handlerId, wrappedCallback, order);
 
-                if (!actionSubscriptions.TryGetValue(subjectId, out List<Subscription> subscriptions))
+                if (!actionHandlers.TryGetValue(subjectId, out List<Handler> handlers))
                 {
-                    subscriptions = new List<Subscription>();
-                    actionSubscriptions.Add(subjectId, subscriptions);
+                    handlers = new List<Handler>();
+                    actionHandlers.Add(subjectId, handlers);
                 }
 
-                if (!subscriptions.Contains(subscription))
+                if (!handlers.Contains(handler))
                 {
-                    subscriptions.Add(subscription);
-                    subscriptions.Sort();
-                    subscriptions.Reverse(); // Since iterate backwards
+                    handlers.Add(handler);
+                    handlers.Sort();
+                    handlers.Reverse(); // Since iterate backwards
                 }
             }
 
@@ -267,18 +267,18 @@ namespace HHG.Messages.Runtime
 
             public void UnsubscribeInternal<T>(SubjectId subjectId, Delegate callback)
             {
-                SubscriptionId subscriptionId = new SubscriptionId(subjectId, callback);
+                HandlerId handlerId = new HandlerId(subjectId, callback);
 
-                if (!actionSubscriptions.TryGetValue(subjectId, out List<Subscription> subscriptions))
+                if (!actionHandlers.TryGetValue(subjectId, out List<Handler> handlers))
                 {
                     return;
                 }
 
-                for (int i = subscriptions.Count - 1; i >= 0; i--)
+                for (int i = handlers.Count - 1; i >= 0; i--)
                 {
-                    if (subscriptions[i].SubscriptionId == subscriptionId)
+                    if (handlers[i].HandlerId == handlerId)
                     {
-                        subscriptions.RemoveAt(i);
+                        handlers.RemoveAt(i);
                         break;
                     }
                 }
@@ -297,20 +297,20 @@ namespace HHG.Messages.Runtime
             {
                 Func<object, object> wrappedCallback = args => callback((T)args);
                 SubjectId subjectId = new SubjectId(typeof(T), id);
-                SubscriptionId subscriptionId = new SubscriptionId(subjectId, callback);
-                Subscription subscription = new Subscription(subscriptionId, wrappedCallback, order);
+                HandlerId handlerId = new HandlerId(subjectId, callback);
+                Handler handler = new Handler(handlerId, wrappedCallback, order);
 
-                if (!funcSubscriptions.TryGetValue(subjectId, out List<Subscription> subscriptions))
+                if (!funcHandlers.TryGetValue(subjectId, out List<Handler> handlers))
                 {
-                    subscriptions = new List<Subscription>();
-                    funcSubscriptions.Add(subjectId, subscriptions);
+                    handlers = new List<Handler>();
+                    funcHandlers.Add(subjectId, handlers);
                 }
 
-                if (!subscriptions.Contains(subscription))
+                if (!handlers.Contains(handler))
                 {
-                    subscriptions.Add(subscription);
-                    subscriptions.Sort();
-                    subscriptions.Reverse(); // Since iterate backwards
+                    handlers.Add(handler);
+                    handlers.Sort();
+                    handlers.Reverse(); // Since iterate backwards
                 }
             }
 
@@ -328,18 +328,18 @@ namespace HHG.Messages.Runtime
             public void UnsubscribeInternal<T, R>(SubjectId subjectId, Func<T, R> callback)
             {
                 Func<object, object> wrappedCallback = args => callback((T)args);
-                SubscriptionId subscriptionId = new SubscriptionId(subjectId, callback);
+                HandlerId handlerId = new HandlerId(subjectId, callback);
 
-                if (!funcSubscriptions.TryGetValue(subjectId, out List<Subscription> subscriptions))
+                if (!funcHandlers.TryGetValue(subjectId, out List<Handler> handlers))
                 {
                     return;
                 }
 
-                for (int i = subscriptions.Count - 1; i >= 0; i--)
+                for (int i = handlers.Count - 1; i >= 0; i--)
                 {
-                    if (subscriptions[i].SubscriptionId == subscriptionId)
+                    if (handlers[i].HandlerId == handlerId)
                     {
-                        subscriptions.RemoveAt(i);
+                        handlers.RemoveAt(i);
                         break;
                     }
                 }

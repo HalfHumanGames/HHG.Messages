@@ -2,26 +2,27 @@
 
 namespace HHG.Messages.Runtime
 {
-    internal class Subscription : IComparable<Subscription>
+    internal class Handler : IComparable<Handler>
     {
-        public SubscriptionId SubscriptionId { get; private set; }
-        private Delegate callback;
+        public HandlerId HandlerId { get; private set; }
+
+        private Delegate handler;
         private int sortOrder;
 
-        public Subscription(SubscriptionId subscriptionId, Delegate wrappedCallback, int order)
+        public Handler(HandlerId handlerId, Delegate wrappedHandler, int order)
         {
-            SubscriptionId = subscriptionId;
-            callback = wrappedCallback;
+            HandlerId = handlerId;
+            handler = wrappedHandler;
             sortOrder = order;
         }
 
         public void InvokeAction(object message)
         {
-            if (callback is Action action)
+            if (handler is Action action)
             {
                 action();
             }
-            else if (callback is Action<object> actionWithParam)
+            else if (handler is Action<object> actionWithParam)
             {
                 actionWithParam(message);
             }
@@ -29,18 +30,18 @@ namespace HHG.Messages.Runtime
 
         public object InvokeFunc(object message)
         {
-            if (callback is Func<object> func)
+            if (handler is Func<object> func)
             {
                 return func();
             }
-            else if (callback is Func<object, object> funcWithParam)
+            else if (handler is Func<object, object> funcWithParam)
             {
                 return funcWithParam(message);
             }
             return default;
         }
 
-        public int CompareTo(Subscription other)
+        public int CompareTo(Handler other)
         {
             return sortOrder.CompareTo(other.sortOrder);
         }
