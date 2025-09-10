@@ -44,17 +44,18 @@ namespace HHG.Messages.Runtime
 
         #region Subscribe (Publish)
 
-        void Subscribe<T>(Action<T> callback, int order = 0);
-        void Subscribe<T>(object id, Action<T> callback, int order = 0);
+        Subscription Subscribe<T>(Action<T> callback, int order = 0);
+        Subscription Subscribe<T>(object id, Action<T> callback, int order = 0);
         void Unsubscribe<T>(Action<T> callback);
         void Unsubscribe<T>(object id, Action<T> callback);
+        void Unsubscribe(Subscription subscription);
 
         #endregion
 
         #region Subscribe (Publish)
 
-        void Subscribe<T, R>(Func<T, R> callback, int order = 0);
-        void Subscribe<T, R>(object id, Func<T, R> callback, int order = 0);
+        Subscription Subscribe<T, R>(Func<T, R> callback, int order = 0);
+        Subscription Subscribe<T, R>(object id, Func<T, R> callback, int order = 0);
         void Unsubscribe<T, R>(Func<T, R> callbacl);
         void Unsubscribe<T, R>(object id, Func<T, R> callback);
 

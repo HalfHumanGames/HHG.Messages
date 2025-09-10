@@ -45,17 +45,18 @@ namespace HHG.Messages.Runtime
 
         #region Subscribe (Publish)
 
-        Task SubscribeAsync<T>(Action<T> callback, int order = 0);
-        Task SubscribeAsync<T>(object id, Action<T> callback, int order = 0);
+        Task<Subscription> SubscribeAsync<T>(Action<T> callback, int order = 0);
+        Task<Subscription> SubscribeAsync<T>(object id, Action<T> callback, int order = 0);
         Task UnsubscribeAsync<T>(Action<T> callback);
         Task UnsubscribeAsync<T>(object id, Action<T> callback);
+        Task UnsubscribeAsync(Subscription subscription);
 
         #endregion
 
         #region Subscribe (Publish)
 
-        Task SubscribeAsync<T, R>(Func<T, R> callback, int order = 0);
-        Task SubscribeAsync<T, R>(object id, Func<T, R> callback, int order = 0);
+        Task<Subscription> SubscribeAsync<T, R>(Func<T, R> callback, int order = 0);
+        Task<Subscription> SubscribeAsync<T, R>(object id, Func<T, R> callback, int order = 0);
         Task UnsubscribeAsync<T, R>(Func<T, R> callback);
         Task UnsubscribeAsync<T, R>(object id, Func<T, R> callback);
 

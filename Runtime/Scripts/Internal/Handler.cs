@@ -4,14 +4,14 @@ namespace HHG.Messages.Runtime
 {
     internal class Handler : IComparable<Handler>
     {
-        public HandlerId HandlerId { get; private set; }
+        public SubscriptionId SubscriptionId { get; private set; }
 
         private Delegate handler;
         private int sortOrder;
 
-        public Handler(HandlerId handlerId, Delegate wrappedHandler, int order)
+        public Handler(SubscriptionId subscriptionId, Delegate wrappedHandler, int order)
         {
-            HandlerId = handlerId;
+            SubscriptionId = subscriptionId;
             handler = wrappedHandler;
             sortOrder = order;
         }

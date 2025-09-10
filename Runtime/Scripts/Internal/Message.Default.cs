@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace HHG.Messages.Runtime
 {
@@ -23,6 +24,11 @@ namespace HHG.Messages.Runtime
             {
                 SubjectId subjectId = new SubjectId(message.GetType(), id);
                 PublishInternal(subjectId, message, mode);
+            }
+
+            public void PublishTo(object id, object message)
+            {
+                Publish(id, message, PublishMode.Narrowcast);
             }
 
             private void PublishInternal(SubjectId subjectId, object message, PublishMode mode = PublishMode.Broadcast)
@@ -55,11 +61,6 @@ namespace HHG.Messages.Runtime
                 }
             }
 
-            public void PublishTo(object id, object message)
-            {
-                Publish(id, message, PublishMode.Narrowcast);
-            }
-
             #endregion
 
             #region Publish
@@ -73,6 +74,11 @@ namespace HHG.Messages.Runtime
             {
                 SubjectId subjectId = new SubjectId(message.GetType(), id);
                 return PublishInternal<R>(subjectId, message, mode);
+            }
+
+            public R[] PublishTo<R>(object id, object message)
+            {
+                return Publish<R>(id, message, PublishMode.Narrowcast);
             }
 
             private R[] PublishInternal<R>(SubjectId subjectId, object message, PublishMode mode = PublishMode.Broadcast)
@@ -118,11 +124,6 @@ namespace HHG.Messages.Runtime
                 }
 
                 return retval;
-            }
-
-            public R[] PublishTo<R>(object id, object message)
-            {
-                return Publish<R>(id, message, PublishMode.Narrowcast);
             }
 
             #endregion
@@ -207,20 +208,19 @@ namespace HHG.Messages.Runtime
 
             #endregion
 
-            #region Subscribe (Publishes)
+            #region Subscribe (Actions)
 
-
-            public void Subscribe<T>(Action<T> callback, int order = 0)
+            public Subscription Subscribe<T>(Action<T> callback, int order = 0)
             {
-                SubscribeInternal<T>(null, callback, order);
+                return SubscribeInternal<T>(null, callback, order);
             }
 
-            public void Subscribe<T>(object id, Action<T> callback, int order = 0)
+            public Subscription Subscribe<T>(object id, Action<T> callback, int order = 0)
             {
-                SubscribeInternal<T>(id, callback, order);
+                return SubscribeInternal<T>(id, callback, order);
             }
 
-            protected void SubscribeInternal<T>(object id, Delegate callback, int order = 0)
+            private Subscription SubscribeInternal<T>(object id, Delegate callback, int order = 0)
             {
                 Action<object> wrappedCallback = default;
                 if (callback is Action action)
@@ -232,8 +232,8 @@ namespace HHG.Messages.Runtime
                     wrappedCallback = arg => actionWithParam((T)arg);
                 }
                 SubjectId subjectId = new SubjectId(typeof(T), id);
-                HandlerId handlerId = new HandlerId(subjectId, callback);
-                Handler handler = new Handler(handlerId, wrappedCallback, order);
+                SubscriptionId subscriptionId = new SubscriptionId(subjectId, callback);
+                Handler handler = new Handler(subscriptionId, wrappedCallback, order);
 
                 if (!actionHandlers.TryGetValue(subjectId, out List<Handler> handlers))
                 {
@@ -247,58 +247,39 @@ namespace HHG.Messages.Runtime
                     handlers.Sort();
                     handlers.Reverse(); // Since iterate backwards
                 }
+
+                return new Subscription(subscriptionId);
             }
 
             public void Unsubscribe<T>(Action<T> callback)
             {
-                UnsubscribeInternal<T>(null, callback);
+                SubjectId subjectId = new SubjectId(typeof(T), null);
+                SubscriptionId subscriptionId = new SubscriptionId(subjectId, callback);
+                UnsubscribeInternal(subscriptionId);
             }
 
             public void Unsubscribe<T>(object id, Action<T> callback)
             {
-                UnsubscribeInternal<T>(id, callback);
-            }
-
-            public void UnsubscribeInternal<T>(object id, Delegate callback)
-            {
                 SubjectId subjectId = new SubjectId(typeof(T), id);
-                UnsubscribeInternal<T>(subjectId, callback);
-            }
-
-            public void UnsubscribeInternal<T>(SubjectId subjectId, Delegate callback)
-            {
-                HandlerId handlerId = new HandlerId(subjectId, callback);
-
-                if (!actionHandlers.TryGetValue(subjectId, out List<Handler> handlers))
-                {
-                    return;
-                }
-
-                for (int i = handlers.Count - 1; i >= 0; i--)
-                {
-                    if (handlers[i].HandlerId == handlerId)
-                    {
-                        handlers.RemoveAt(i);
-                        break;
-                    }
-                }
+                SubscriptionId subscriptionId = new SubscriptionId(subjectId, callback);
+                UnsubscribeInternal(subscriptionId);
             }
 
             #endregion
 
-            #region Subscribe (Publishs)
+            #region Subscribe (Funcs)
 
-            public void Subscribe<T, R>(Func<T, R> callback, int order = 0)
+            public Subscription Subscribe<T, R>(Func<T, R> callback, int order = 0)
             {
-                Subscribe(null, callback, order);
+                return Subscribe(null, callback, order);
             }
 
-            public void Subscribe<T, R>(object id, Func<T, R> callback, int order = 0)
+            public Subscription Subscribe<T, R>(object id, Func<T, R> callback, int order = 0)
             {
                 Func<object, object> wrappedCallback = args => callback((T)args);
                 SubjectId subjectId = new SubjectId(typeof(T), id);
-                HandlerId handlerId = new HandlerId(subjectId, callback);
-                Handler handler = new Handler(handlerId, wrappedCallback, order);
+                SubscriptionId subscriptionId = new SubscriptionId(subjectId, callback);
+                Handler handler = new Handler(subscriptionId, wrappedCallback, order);
 
                 if (!funcHandlers.TryGetValue(subjectId, out List<Handler> handlers))
                 {
@@ -312,32 +293,47 @@ namespace HHG.Messages.Runtime
                     handlers.Sort();
                     handlers.Reverse(); // Since iterate backwards
                 }
+
+                return new Subscription(subscriptionId);
             }
 
             public void Unsubscribe<T, R>(Func<T, R> callback)
             {
-                Unsubscribe(null, callback);
+                SubjectId subjectId = new SubjectId(typeof(T), null);
+                SubscriptionId subscriptionId = new SubscriptionId(subjectId, callback);
+                UnsubscribeInternal(subscriptionId);
             }
 
             public void Unsubscribe<T, R>(object id, Func<T, R> callback)
             {
                 SubjectId subjectId = new SubjectId(typeof(T), id);
-                UnsubscribeInternal(subjectId, callback);
+                SubscriptionId subscriptionId = new SubscriptionId(subjectId, callback);
+                UnsubscribeInternal(subscriptionId);
             }
 
-            public void UnsubscribeInternal<T, R>(SubjectId subjectId, Func<T, R> callback)
+            public void Unsubscribe(Subscription subscription)
             {
-                Func<object, object> wrappedCallback = args => callback((T)args);
-                HandlerId handlerId = new HandlerId(subjectId, callback);
+                UnsubscribeInternal(subscription.subscriptionId);
+            }
 
-                if (!funcHandlers.TryGetValue(subjectId, out List<Handler> handlers))
+            private void UnsubscribeInternal(SubscriptionId subscriptionId)
+            {
+                if (actionHandlers.TryGetValue(subscriptionId.SubjectId, out List<Handler> handlers))
                 {
-                    return;
+                    UnsubscribeInternalHelper(subscriptionId, handlers);
                 }
 
+                if (funcHandlers.TryGetValue(subscriptionId.SubjectId, out handlers))
+                {
+                    UnsubscribeInternalHelper(subscriptionId, handlers);
+                }
+            }
+
+            private void UnsubscribeInternalHelper(SubscriptionId subscriptionId, List<Handler> handlers)
+            {
                 for (int i = handlers.Count - 1; i >= 0; i--)
                 {
-                    if (handlers[i].HandlerId == handlerId)
+                    if (handlers[i].SubscriptionId == subscriptionId)
                     {
                         handlers.RemoveAt(i);
                         break;
